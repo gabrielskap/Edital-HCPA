@@ -1,0 +1,2467 @@
+@import "tailwindcss";
+
+:root {
+  /* Cores Primárias */
+  --color-primary: #1a6b3a;        /* Verde institucional HCPA */
+  --color-primary-dark: #145530;   /* Verde escuro para hover */
+  --color-primary-light: #e8f5ee;  /* Verde bem claro para fundos */
+  --color-primary-mid: #2d8a52;    /* Verde médio para elementos ativos */
+
+  /* Cores de Apoio */
+  --color-accent: #f0a500;         /* Dourado/amarelo do HCPA (botão Área do Paciente) */
+  --color-accent-light: #fef9ec;   /* Dourado claro para fundos de alerta */
+
+  /* Neutros */
+  --color-white: #ffffff;
+  --color-bg: #f4f6f4;             /* Fundo geral levemente esverdeado */
+  --color-bg-card: #ffffff;        /* Fundo de cards e tabelas */
+  --color-border: #dde8e1;         /* Borda sutil esverdeada */
+  --color-border-light: #eef3f0;   /* Borda muito sutil */
+
+  /* Textos */
+  --color-text-primary: #1a2e1f;   /* Texto principal quase preto esverdeado */
+  --color-text-secondary: #4a6352; /* Texto secundário verde médio */
+  --color-text-muted: #7a9485;     /* Texto auxiliar/placeholder */
+  --color-text-on-primary: #ffffff;/* Texto sobre fundo verde */
+
+  /* Semânticas */
+  --color-success: #1a6b3a;
+  --color-success-bg: #e8f5ee;
+  --color-warning: #c17f00;
+  --color-warning-bg: #fef9ec;
+  --color-danger: #c0392b;
+  --color-danger-bg: #fdecea;
+  --color-info: #1565c0;
+  --color-info-bg: #e3f0fc;
+  --color-neutral: #5a6a60;
+  --color-neutral-bg: #f0f3f1;
+
+  /* Sombras */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(26, 107, 58, 0.10);
+  --shadow-lg: 0 8px 24px rgba(26, 107, 58, 0.12);
+
+  /* Tipografia */
+  --font-family: 'Nunito', -apple-system, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 17px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+
+  /* Espaçamentos */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* Bordas */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --border-radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Transições */
+  --transition: all 0.2s ease;
+}
+
+/* Tema Escuro - Redesenhado para manter o padrão institucional limpo e verde do HCPA, sem fundos pretos/escuros */
+body.dark-mode,
+body.dark,
+html.dark-mode body,
+html.dark body {
+  --color-white: #ffffff;
+  --color-bg: #f4f6f4;
+  --color-bg-card: #ffffff;
+  --color-border: #dde8e1;
+  --color-border-light: #eef3f0;
+  --color-text-primary: #1a2e1f;
+  --color-text-secondary: #4a6352;
+  --color-text-muted: #7a9485;
+  --color-primary-light: #e8f5ee;
+}
+
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  transition: var(--transition);
+}
+
+/* Tipografia Geral */
+h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* Corpo de texto */
+p, span, div, td, th {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+}
+
+/* Links */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   DESIGN SYSTEM - SELECTPRO REDESIGN COMPONENTS
+   ========================================================================== */
+
+/* 1. CARDS */
+.sp-card,
+.card,
+.dashboard-card {
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 20px 24px !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: var(--transition) !important;
+}
+
+.sp-card-hover:hover,
+.sp-card:hover,
+.card:hover,
+.dashboard-card:hover {
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--color-primary-light) !important;
+}
+
+.sp-card-title,
+.sp-card h3,
+.sp-card h4,
+.card h3,
+.card h4 {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  color: var(--color-text-secondary) !important;
+}
+
+/* 2. CARDS DE MÉTRICAS (Dashboard) */
+.sp-metric-card {
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 20px !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: var(--transition) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+.sp-metric-card:hover {
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--color-primary-light) !important;
+}
+
+.sp-metric-card-blue { border-left: 3px solid var(--color-info) !important; }
+.sp-metric-card-emerald { border-left: 3px solid var(--color-success) !important; }
+.sp-metric-card-amber { border-left: 3px solid var(--color-warning) !important; }
+.sp-metric-card-slate { border-left: 3px solid var(--color-neutral) !important; }
+
+.sp-metric-card .sp-metric-icon {
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: var(--color-primary-light) !important;
+  color: var(--color-primary) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+.sp-metric-card .sp-metric-value {
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  color: var(--color-text-primary) !important;
+  line-height: normal !important;
+}
+
+.sp-metric-card .sp-metric-label {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--color-text-muted) !important;
+}
+
+.sp-metric-card .sp-metric-variation-positive {
+  font-size: 12px !important;
+  color: var(--color-success) !important;
+}
+
+.sp-metric-card .sp-metric-variation-negative {
+  font-size: 12px !important;
+  color: var(--color-danger) !important;
+}
+
+/* 3. TABELAS */
+.sp-table-container {
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden !important;
+}
+
+.sp-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background-color: var(--color-white) !important;
+}
+
+.sp-table thead {
+  background-color: var(--color-primary-light) !important;
+}
+
+.sp-table thead th {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  color: var(--color-primary-dark) !important;
+  padding: 12px 16px !important;
+  border-bottom: 2px solid var(--color-border) !important;
+  text-align: left !important;
+}
+
+.sp-table tbody tr {
+  border-bottom: 1px solid var(--color-border-light) !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.sp-table tbody tr:hover {
+  background-color: var(--color-primary-light) !important;
+}
+
+.sp-table tbody tr:last-child {
+  border-bottom: none !important;
+}
+
+.sp-table tbody td {
+  padding: 13px 16px !important;
+  font-size: 13px !important;
+  color: var(--color-text-primary) !important;
+  vertical-align: middle !important;
+}
+
+.sp-table tbody td .sp-text-secondary {
+  font-size: 11px !important;
+  color: var(--color-text-muted) !important;
+}
+
+/* 4. BADGES DE STATUS */
+.sp-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--radius-full) !important;
+  padding: 4px 10px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  line-height: normal !important;
+  border: none !important;
+}
+
+.sp-badge-success,
+.sp-badge-publicado,
+.sp-badge-em-andamento {
+  background-color: var(--color-success-bg) !important;
+  color: var(--color-success) !important;
+}
+
+.sp-badge-neutral,
+.sp-badge-rascunho,
+.sp-badge-inativo {
+  background-color: var(--color-neutral-bg) !important;
+  color: var(--color-neutral) !important;
+}
+
+.sp-badge-convocacao,
+.sp-badge-ativo {
+  background-color: var(--color-success-bg) !important;
+  color: var(--color-primary-dark) !important;
+}
+
+.sp-badge-recurso,
+.sp-badge-pendente {
+  background-color: var(--color-warning-bg) !important;
+  color: var(--color-warning) !important;
+}
+
+.sp-badge-encerrado,
+.sp-badge-indeferido {
+  background-color: #f0f0f0 !important;
+  color: #666666 !important;
+}
+
+.sp-badge-erro,
+.sp-badge-critico {
+  background-color: var(--color-danger-bg) !important;
+  color: var(--color-danger) !important;
+}
+
+.sp-badge-info {
+  background-color: var(--color-info-bg) !important;
+  color: var(--color-info) !important;
+}
+
+/* 5. BOTÕES */
+.sp-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 9px 18px !important;
+  border-radius: var(--radius-md) !important;
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+  border: none !important;
+}
+
+.sp-btn:active {
+  transform: scale(0.98) !important;
+}
+
+/* Botão primário */
+.sp-btn-primary {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+}
+
+.sp-btn-primary:hover {
+  background-color: var(--color-primary-dark) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Botão secundário */
+.sp-btn-secondary {
+  background-color: var(--color-white) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+.sp-btn-secondary:hover {
+  background-color: var(--color-bg) !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* Botão de ação (accent) */
+.sp-btn-accent {
+  background-color: var(--color-accent) !important;
+  color: #1a2e1f !important;
+  font-weight: 700 !important;
+}
+
+.sp-btn-accent:hover {
+  background-color: #d4940a !important;
+}
+
+/* Botão de perigo */
+.sp-btn-danger {
+  background-color: var(--color-danger-bg) !important;
+  color: var(--color-danger) !important;
+  border: 1px solid var(--color-danger) !important;
+}
+
+.sp-btn-danger:hover {
+  background-color: var(--color-danger) !important;
+  color: #ffffff !important;
+}
+
+/* Botões de ícone (ações de tabela) */
+.sp-btn-icon {
+  width: 32px !important;
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: transparent !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--color-text-muted) !important;
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+  padding: 0 !important;
+}
+
+.sp-btn-icon:hover {
+  background-color: var(--color-primary-light) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+}
+
+/* Individual table action hovers */
+.sp-btn-icon-view:hover {
+  color: var(--color-success) !important;
+  border-color: var(--color-success) !important;
+  background-color: var(--color-success-bg) !important;
+}
+
+.sp-btn-icon-edit:hover {
+  color: var(--color-info) !important;
+  border-color: var(--color-info) !important;
+  background-color: var(--color-info-bg) !important;
+}
+
+.sp-btn-icon-clone:hover {
+  color: var(--color-warning) !important;
+  border-color: var(--color-warning) !important;
+  background-color: var(--color-warning-bg) !important;
+}
+
+.sp-btn-icon-delete:hover {
+  color: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
+  background-color: var(--color-danger-bg) !important;
+}
+
+.sp-btn-icon-pdf:hover,
+.sp-btn-icon-generate:hover {
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  background-color: var(--color-primary-light) !important;
+}
+
+/* 6. FORMULÁRIOS E INPUTS */
+.sp-form-label,
+form label,
+label,
+.form-label {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+  color: var(--color-text-secondary) !important;
+  margin-bottom: 6px !important;
+  display: block !important;
+}
+
+.sp-input,
+form input[type="text"]:not([type="checkbox"]):not([type="radio"]),
+form input[type="number"],
+form input[type="email"],
+form input[type="date"],
+form select,
+form textarea {
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 9px 12px !important;
+  font-size: 13px !important;
+  color: var(--color-text-primary) !important;
+  transition: var(--transition) !important;
+  outline: none !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+.sp-input::placeholder,
+form input::placeholder,
+form textarea::placeholder {
+  color: var(--color-text-muted) !important;
+}
+
+.sp-input:hover:not(:focus),
+form input[type="text"]:hover:not(:focus),
+form input[type="number"]:hover:not(:focus),
+form input[type="email"]:hover:not(:focus),
+form input[type="date"]:hover:not(:focus),
+form select:hover:not(:focus),
+form textarea:hover:not(:focus) {
+  border-color: var(--color-primary-mid) !important;
+}
+
+.sp-input:focus,
+form input[type="text"]:focus,
+form input[type="number"]:focus,
+form input[type="email"]:focus,
+form input[type="date"]:focus,
+form select:focus,
+form textarea:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(26, 107, 58, 0.12) !important;
+}
+
+.sp-input:disabled,
+.sp-input[readonly],
+form input:disabled,
+form input[readonly],
+form select:disabled,
+form select[readonly],
+form textarea:disabled,
+form textarea[readonly] {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text-muted) !important;
+}
+
+/* Campo de busca */
+.sp-search-container {
+  position: relative !important;
+}
+
+.sp-search-input {
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 9px 12px 9px 36px !important;
+  font-size: 13px !important;
+  color: var(--color-text-primary) !important;
+  min-width: 280px !important;
+  display: block !important;
+  width: 100% !important;
+  transition: var(--transition) !important;
+  outline: none !important;
+}
+
+.sp-search-input:hover:not(:focus) {
+  border-color: var(--color-primary-mid) !important;
+}
+
+.sp-search-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(26, 107, 58, 0.12) !important;
+}
+
+.sp-search-icon {
+  position: absolute !important;
+  left: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: var(--color-text-muted) !important;
+}
+
+@theme {
+  --font-sans: var(--font-family);
+  --font-family: var(--font-family);
+
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-primary-light: var(--color-primary-light);
+  --color-primary-mid: var(--color-primary-mid);
+
+  --color-accent: var(--color-accent);
+  --color-accent-light: var(--color-accent-light);
+
+  --color-white: var(--color-white);
+  --color-bg: var(--color-bg);
+  --color-bg-card: var(--color-bg-card);
+  --color-border: var(--color-border);
+  --color-border-light: var(--color-border-light);
+
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-on-primary: var(--color-text-on-primary);
+
+  --color-success: var(--color-success);
+  --color-success-bg: var(--color-success-bg);
+  --color-warning: var(--color-warning);
+  --color-warning-bg: var(--color-warning-bg);
+  --color-danger: var(--color-danger);
+  --color-danger-bg: var(--color-danger-bg);
+  --color-info: var(--color-info);
+  --color-info-bg: var(--color-info-bg);
+  --color-neutral: var(--color-neutral);
+  --color-neutral-bg: var(--color-neutral-bg);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --font-size-xs: var(--font-size-xs);
+  --font-size-sm: var(--font-size-sm);
+  --font-size-base: var(--font-size-base);
+  --font-size-md: var(--font-size-md);
+  --font-size-lg: var(--font-size-lg);
+  --font-size-xl: var(--font-size-xl);
+  --font-size-2xl: var(--font-size-2xl);
+
+  --space-1: var(--space-1);
+  --space-2: var(--space-2);
+  --space-3: var(--space-3);
+  --space-4: var(--space-4);
+  --space-5: var(--space-5);
+  --space-6: var(--space-6);
+  --space-8: var(--space-8);
+  --space-10: var(--space-10);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-full);
+}
+
+/* ==========================================================================
+   ADVANCED REDESIGN STYLES - SELECTPRO COMPONENTS
+   ========================================================================== */
+
+/* --- 1. MODAIS --- */
+.sp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background-color: rgba(10, 30, 15, 0.55);
+  backdrop-filter: blur(2px);
+  animation: spFadeIn 0.2s ease-out forwards;
+}
+
+.sp-modal-container {
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  max-width: 560px;
+  width: 100%;
+  padding: 0 !important;
+  margin: auto;
+  overflow: hidden;
+  position: relative;
+  z-index: 55;
+  animation: spSlideUp 0.2s ease-out forwards;
+  border: 1px solid var(--color-border);
+}
+
+.sp-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--color-border);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.sp-modal-title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--color-text-primary) !important;
+}
+
+.sp-modal-close {
+  width: 28px !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: var(--color-bg) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--color-text-primary) !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+}
+
+.sp-modal-close:hover {
+  background-color: var(--color-danger-bg) !important;
+  color: var(--color-danger) !important;
+}
+
+.sp-modal-body {
+  padding: 24px !important;
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+}
+
+.sp-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--color-border);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+}
+
+/* --- 2. TOAST NOTIFICATIONS --- */
+.sp-toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sp-toast {
+  width: 320px;
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-lg);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  position: relative;
+  overflow: hidden;
+  animation: spSlideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 0.3s ease;
+}
+
+.sp-toast-icon {
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.sp-toast-msg {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: normal !important;
+  color: var(--color-text-primary) !important;
+  flex-grow: 1;
+}
+
+.sp-toast-close {
+  color: var(--color-text-muted);
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: var(--transition);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.sp-toast-close:hover {
+  color: var(--color-text-primary);
+}
+
+.sp-toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: currentColor;
+  animation: spToastProgress 3s linear forwards;
+}
+
+/* Força variantes de Toast */
+.sp-toast-success {
+  border-left: 4px solid var(--color-success) !important;
+}
+.sp-toast-success .sp-toast-icon {
+  color: var(--color-success) !important;
+}
+.sp-toast-success .sp-toast-progress {
+  color: var(--color-success) !important;
+}
+
+.sp-toast-error {
+  border-left: 4px solid var(--color-danger) !important;
+}
+.sp-toast-error .sp-toast-icon {
+  color: var(--color-danger) !important;
+}
+.sp-toast-error .sp-toast-progress {
+  color: var(--color-danger) !important;
+}
+
+.sp-toast-warning {
+  border-left: 4px solid var(--color-warning) !important;
+}
+.sp-toast-warning .sp-toast-icon {
+  color: var(--color-warning) !important;
+}
+.sp-toast-warning .sp-toast-progress {
+  color: var(--color-warning) !important;
+}
+
+.sp-toast-info {
+  border-left: 4px solid var(--color-info) !important;
+}
+.sp-toast-info .sp-toast-icon {
+  color: var(--color-info) !important;
+}
+.sp-toast-info .sp-toast-progress {
+  color: var(--color-info) !important;
+}
+
+/* --- 3. LOADING SPINNER --- */
+.sp-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: rgba(244, 246, 244, 0.85);
+  transition: var(--transition);
+}
+
+.sp-loading-spinner {
+  width: 40px !important;
+  height: 40px !important;
+  border: 3px solid var(--color-border) !important;
+  border-top: 3px solid var(--color-primary) !important;
+  border-radius: 50% !important;
+  animation: spRotateSpinner 0.8s linear infinite !important;
+  margin-bottom: 8px !important;
+}
+
+.sp-loading-text {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--color-text-muted) !important;
+}
+
+/* --- 4. ABAS INTERNAS (Tabs) --- */
+.sp-tabs-container {
+  display: flex !important;
+  gap: 16px !important;
+  border-bottom: 2px solid var(--color-border) !important;
+}
+
+.sp-tab {
+  padding: 10px 16px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--color-text-muted) !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  margin-bottom: -2px !important;
+  transition: var(--transition) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.sp-tab:hover {
+  color: var(--color-primary) !important;
+}
+
+.sp-tab-active {
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid var(--color-primary) !important;
+}
+
+/* --- 5. WIZARD DE FORMULÁRIO (Barra de Progresso) --- */
+.sp-wizard-container {
+  padding: 20px 32px !important;
+  background-color: var(--color-white) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+.sp-wizard-steps {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  position: relative !important;
+  width: 100% !important;
+}
+
+.sp-wizard-step {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  position: relative !important;
+  z-index: 2 !important;
+  flex: 1 !important;
+}
+
+.sp-wizard-circle {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  transition: var(--transition) !important;
+}
+
+.sp-wizard-label {
+  font-size: 11px !important;
+  margin-top: 6px !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  transition: var(--transition) !important;
+}
+
+/* Concluída */
+.sp-wizard-step-completed .sp-wizard-circle {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.sp-wizard-step-completed .sp-wizard-label {
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
+}
+
+/* Atual */
+.sp-wizard-step-active .sp-wizard-circle {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  border: none !important;
+  outline: 3px solid var(--color-primary-light) !important;
+}
+.sp-wizard-step-active .sp-wizard-label {
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
+}
+
+/* Futura */
+.sp-wizard-step-future .sp-wizard-circle {
+  background-color: var(--color-neutral-bg) !important;
+  border: 2px solid var(--color-border) !important;
+  color: var(--color-text-muted) !important;
+}
+.sp-wizard-step-future .sp-wizard-label {
+  color: var(--color-text-muted) !important;
+}
+
+.sp-wizard-line {
+  position: absolute;
+  top: 14px;
+  height: 2px;
+  background-color: var(--color-border);
+  z-index: 1;
+}
+
+.sp-wizard-line-active {
+  background-color: var(--color-primary);
+}
+
+/* --- 6. TIMELINE (Histórico/Logs) --- */
+.sp-timeline-container {
+  padding: 0 0 0 20px !important;
+  border-left: 2px solid var(--color-border) !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.sp-timeline-item {
+  position: relative !important;
+  padding: 0 0 20px 16px !important;
+}
+
+.sp-timeline-point {
+  position: absolute !important;
+  left: -26px; /* -6px from the 20px border padding offset */
+  top: 6px !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 9999px !important;
+}
+
+.sp-timeline-point-normal {
+  background-color: var(--color-primary) !important;
+}
+
+.sp-timeline-point-critical {
+  background-color: var(--color-danger) !important;
+}
+
+.sp-timeline-time {
+  font-size: 11px !important;
+  color: var(--color-text-muted) !important;
+}
+
+.sp-timeline-action {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--color-text-primary) !important;
+  margin-top: 2px !important;
+  margin-bottom: 2px !important;
+  line-height: normal !important;
+}
+
+.sp-timeline-detail {
+  font-size: 12px !important;
+  color: var(--color-text-secondary) !important;
+}
+
+/* --- 7. ALERTAS E AVISOS --- */
+.sp-alert {
+  border-radius: var(--radius-md) !important;
+  padding: 12px 16px !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+.sp-alert-icon {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0;
+  margin-top: 1px !important;
+}
+
+.sp-alert-text {
+  font-size: 13px !important;
+}
+
+.sp-alert-info {
+  background-color: var(--color-info-bg) !important;
+  border-left: 4px solid var(--color-info) !important;
+  color: var(--color-info) !important;
+}
+
+.sp-alert-warning {
+  background-color: var(--color-warning-bg) !important;
+  border-left: 4px solid var(--color-warning) !important;
+  color: var(--color-warning) !important;
+}
+
+.sp-alert-success {
+  background-color: var(--color-success-bg) !important;
+  border-left: 4px solid var(--color-success) !important;
+  color: var(--color-success) !important;
+}
+
+.sp-alert-danger {
+  background-color: var(--color-danger-bg) !important;
+  border-left: 4px solid var(--color-danger) !important;
+  color: var(--color-danger) !important;
+}
+
+/* --- 8. EMPTY STATES --- */
+.sp-empty-state {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 48px 24px !important;
+}
+
+.sp-empty-state-icon {
+  font-size: 48px !important;
+  color: var(--color-border) !important;
+  margin-bottom: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.sp-empty-state-title {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: var(--color-text-secondary) !important;
+  margin-bottom: 4px !important;
+}
+
+.sp-empty-state-subtitle {
+  font-size: 13px !important;
+  color: var(--color-text-muted) !important;
+  margin-bottom: 16px !important;
+}
+
+/* Keyframes de animação */
+@keyframes spFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spSlideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes spSlideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes spToastProgress {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+@keyframes spRotateSpinner {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   SELECTPRO LAYOUT & READABILITY CORRECTIONS (BUGS 2, 3, 4)
+   ========================================================================== */
+
+/* --- BUG 2: FORCE LIGHT FONDS & DARK READABLE TEXT ON ALL CARDS & TABLES --- */
+:root {
+  /* Ensure a solid light palette even if dark mode styling is applied on parents */
+  --color-bg-card: #ffffff;
+  --color-white: #ffffff;
+}
+
+/* Force light background for every card, container, or module panel */
+.bg-white,
+.card,
+.sp-card,
+.dashboard-card,
+.sp-table-container,
+[class*="bg-slate-800"],
+[class*="dark:bg-slate-800"],
+[class*="bg-slate-900"],
+[class*="dark:bg-slate-900"],
+.bg-slate-50,
+.bg-slate-100 {
+  background-color: var(--color-bg-card) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+/* Force Table and Table-element styles to have perfect WCAG AA contrast */
+table,
+.table,
+.sp-table {
+  background-color: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+thead,
+tfoot,
+tr,
+th,
+td {
+  color: var(--color-text-primary) !important;
+}
+
+/* Table header forced to '--color-primary-light' and dark text */
+thead th,
+.sp-table thead th,
+table thead th,
+[class*="bg-slate-900"] th,
+[class*="dark:bg-slate-900"] th {
+  background-color: var(--color-primary-light) !important;
+  color: var(--color-primary-dark) !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid var(--color-border) !important;
+  padding: 12px 16px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+}
+
+/* Zebra striping for readability */
+tbody tr:nth-child(even),
+.sp-table tbody tr:nth-child(even),
+table tbody tr:nth-child(even) {
+  background-color: var(--color-border-light) !important;
+}
+
+tbody tr:nth-child(odd),
+.sp-table tbody tr:nth-child(odd),
+table tbody tr:nth-child(odd) {
+  background-color: var(--color-white) !important;
+}
+
+tbody tr:hover,
+.sp-table tbody tr:hover,
+table tbody tr:hover {
+  background-color: var(--color-primary-light) !important;
+}
+
+tbody tr td,
+.sp-table tbody tr td,
+table tbody tr td {
+  border-bottom: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+  padding: 12px 16px !important;
+}
+
+/* Ensure a solid light palette even if dark mode styling is applied on parents */
+:root {
+  --color-bg-card: #ffffff;
+  --color-white: #ffffff;
+  --color-bg-hover: var(--color-primary-light);
+}
+
+/* 1. SEÇÕES PRINCIPAIS E RESPIROS (PADDING) */
+main {
+  padding: 16px !important;
+}
+@media (min-width: 768px) {
+  main {
+    padding: 24px 32px !important; /* Desgrudar o conteúdo das bordas da tela e da sidebar */
+  }
+}
+
+/* 2. TIPOGRAFIA, TÍTULOS E COMPORTAMENTO GERAL */
+h1 {
+  font-family: var(--font-family) !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: var(--color-text-primary) !important;
+  margin-bottom: 8px !important;
+}
+
+h2 {
+  font-family: var(--font-family) !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: var(--color-text-primary) !important;
+  margin-bottom: 8px !important;
+}
+
+/* 3. PADRONIZAÇÃO DE GAPS E GRIDS DO DESIGN SYSTEM */
+.grid,
+[class*="grid-cols-"],
+.gap-4,
+.gap-5,
+.gap-6 {
+  gap: 16px !important; /* Padronização global nos grids e flexboxes */
+}
+
+/* 4. MÓDULOS TOP BANNERS */
+#dashboard-module > div:first-child,
+#editais-module > div:first-child,
+#candidatos-module > div:first-child,
+#avaliacoes-module > div:first-child,
+#convocacoes-module > div:first-child,
+#auditoria-module > div:first-child,
+#administracao-module > div:first-child {
+  margin-bottom: 24px !important;
+  padding-bottom: 16px !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+/* 5. SELETORES DE TEXTOS SECUNDÁRIOS */
+p.text-xs,
+p.text-sm,
+span.text-xs,
+span.text-sm,
+.text-slate-500,
+.text-slate-600,
+.text-slate-450,
+.text-slate-440,
+.text-slate-550,
+.sp-text-secondary {
+  color: var(--color-text-secondary) !important;
+  font-size: 14px !important; /* Tom de cinza mais suave e tamanho ligeiramente menor */
+}
+
+/* Header de Tabela Formatações adicionais de respiro */
+thead th,
+.sp-table thead th,
+table thead th {
+  background-color: var(--color-primary-light) !important;
+  color: var(--color-primary-dark) !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid var(--color-border) !important;
+  padding: 12px 16px !important; /* Aumentar respiro das células th */
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  text-align: left !important;
+  font-size: 11px !important;
+}
+
+/* Células td Padding e Respiro */
+tbody tr td,
+.sp-table tbody tr td,
+table tbody tr td {
+  border-bottom: 1px solid var(--color-border-light) !important;
+  color: var(--color-text-primary) !important;
+  padding: 12px 16px !important; /* Aumentar respiro das células td */
+}
+
+/* Efeito Hover nas Linhas de Tabela */
+tbody tr,
+.sp-table tbody tr,
+table tbody tr {
+  transition: background-color 0.15s ease !important;
+}
+
+tbody tr:hover,
+.sp-table tbody tr:hover,
+table tbody tr:hover {
+  background-color: var(--color-bg-hover) !important; /* Efeito de :hover nas linhas */
+}
+
+/* Zebra striping elegante baseada nas variáveis */
+tbody tr:nth-child(even),
+.sp-table tbody tr:nth-child(even),
+table tbody tr:nth-child(even) {
+  background-color: var(--color-border-light) !important;
+}
+
+tbody tr:nth-child(odd),
+.sp-table tbody tr:nth-child(odd),
+table tbody tr:nth-child(odd) {
+  background-color: var(--color-white) !important;
+}
+
+/* ALINHAMENTOS RECURSIVOS DE COLUNAS DE TABELA (Ações, Status, Vagas) */
+th[class*="text-center"],
+td[class*="text-center"],
+#editais-list-table th:nth-child(2),   /* Status */
+#editais-list-table td:nth-child(2),
+#editais-list-table th:nth-child(5),   /* Vagas */
+#editais-list-table td:nth-child(5),
+#editais-list-table th:nth-child(6),   /* Ações */
+#editais-list-table td:nth-child(6),
+#table-cadastro-candidatos th:nth-child(6), /* Modalidade */
+#table-cadastro-candidatos td:nth-child(6),
+#table-cadastro-candidatos th:nth-child(7), /* Situação/Status */
+#table-cadastro-candidatos td:nth-child(7),
+#table-cadastro-candidatos th:nth-child(8), /* Ações */
+#table-cadastro-candidatos td:nth-child(8),
+#table-avaliacao-notas th:nth-last-child(1), /* Situação */
+#table-avaliacao-notas td:nth-last-child(1),
+#table-avaliacao-notas th:nth-last-child(2), /* Nota Final */
+#table-avaliacao-notas td:nth-last-child(2),
+#table-avaliacao-notas th:nth-last-child(3), /* Nota Títulos */
+#table-avaliacao-notas td:nth-last-child(3),
+#table-avaliacao-notas th:nth-last-child(4), /* Nota Escrita */
+#table-avaliacao-notas td:nth-last-child(4),
+#table-logs-auditoria th:nth-child(4), /* Módulo */
+#table-logs-auditoria td:nth-child(4),
+#table-logs-auditoria th:nth-child(6), /* IP */
+#table-logs-auditoria td:nth-child(6),
+#table-logs-auditoria th:nth-child(7), /* Ações */
+#table-logs-auditoria td:nth-child(7),
+#table-recursos-adm th:nth-child(5), /* Status */
+#table-recursos-adm td:nth-child(5),
+#table-recursos-adm th:nth-child(6), /* Julgamento */
+#table-recursos-adm td:nth-child(6) {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+/* Garante o centralizamento horizontal de badges dentro de células centralizadas */
+td:nth-child(2) > span,
+td:nth-child(5) > span,
+td:nth-child(6) > span,
+td:nth-child(7) > span,
+td:nth-child(8) > span,
+td:nth-last-child(1) > span {
+  margin: 0 auto !important;
+}
+
+/* Mantenha alinhamento rigoroso à esquerda para Nomes, CPFs, Cargos e Títulos */
+#editais-list-table td:nth-child(1),
+#editais-list-table td:nth-child(3),
+#editais-list-table td:nth-child(4),
+#table-cadastro-candidatos td:nth-child(1),
+#table-cadastro-candidatos td:nth-child(2),
+#table-cadastro-candidatos td:nth-child(3),
+#table-cadastro-candidatos td:nth-child(4),
+#table-cadastro-candidatos td:nth-child(5),
+#table-avaliacao-notas td:nth-child(1),
+#table-avaliacao-notas td:nth-child(2),
+#table-avaliacao-notas td:nth-child(3),
+#table-recursos-adm td:nth-child(1),
+#table-recursos-adm td:nth-child(2),
+#table-recursos-adm td:nth-child(3),
+#table-recursos-adm td:nth-child(4) {
+  text-align: left !important;
+}
+
+/* --- BADGES DE STATUS (ROUNDED PILLS PAR EXCELLENCE) --- */
+.sp-badge,
+span[class*="rounded-full"],
+[class*="badge-"] {
+  border-radius: 999px !important; /* Pilha perfeita */
+  padding: 4px 10px !important; /* Padding horizontal reduzido */
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 20px !important;
+  line-height: 1 !important;
+  transition: all 0.15s ease !important;
+}
+
+.sp-badge-success,
+.sp-badge-publicado,
+.sp-badge-em-andamento,
+span[class*="bg-emerald-"] {
+  background-color: rgba(26, 107, 58, 0.12) !important; /* Cor com opacidade */
+  color: #1a6b3a !important; /* Texto sólido */
+}
+
+.sp-badge-neutral,
+.sp-badge-rascunho,
+.sp-badge-inativo,
+span[class*="bg-slate-100"] {
+  background-color: rgba(90, 106, 96, 0.12) !important;
+  color: #5a6a60 !important;
+}
+
+.sp-badge-convocacao,
+.sp-badge-ativo {
+  background-color: rgba(26, 107, 58, 0.12) !important;
+  color: #1a6b3a !important;
+}
+
+.sp-badge-recurso,
+.sp-badge-pendente,
+span[class*="bg-amber-"] {
+  background-color: rgba(193, 127, 0, 0.12) !important;
+  color: #c17f00 !important;
+}
+
+.sp-badge-encerrado,
+.sp-badge-indeferido,
+span[class*="bg-rose-"] {
+  background-color: rgba(192, 57, 43, 0.12) !important;
+  color: #c0392b !important;
+}
+
+/* --- FORMULÁRIOS, INPUTS E FOCUS --- */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea,
+.sp-input,
+.sp-search-input,
+form input[type="text"],
+form input[type="number"],
+form input[type="email"],
+form input[type="date"],
+form select,
+form textarea {
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-md) !important; /* --radius-md: 8px */
+  padding: 8px 12px !important; /* Padding interno das diretrizes */
+  outline: none !important;
+  transition: var(--transition) !important;
+  font-size: 13px !important;
+  min-height: 40px !important; /* Height padronizado conforme diretrizes */
+  box-sizing: border-box !important;
+}
+
+textarea {
+  min-height: 100px !important; /* Textareas não rígidos */
+}
+
+/* Focus de Form: Verde Institucional HCPA com box-shadow suave */
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus,
+.sp-input:focus,
+.sp-search-input:focus,
+form input:focus,
+form select:focus,
+form textarea:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(26, 107, 58, 0.16) !important; /* Sombra verde sutil ao focar */
+}
+
+/* Estilo para LABELS */
+label,
+.sp-form-label,
+.form-label,
+form label {
+  color: var(--color-text-secondary) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  margin-bottom: 6px !important;
+  display: block !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* --- PAINÉIS LATERAIS E LAYOUTS DIVIDIDOS --- */
+.grid-layout-divided {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 24px !important; /* Separados por gap saudável */
+}
+
+@media (min-width: 1024px) {
+  /* Layout dividido clássico */
+  .grid-layout-divided {
+    grid-template-columns: 1.5fr 1fr !important;
+  }
+}
+
+/* Garantia que as laterais tenham borda sutil e bom respiro */
+.grid-layout-divided-panel {
+  border-left: 1px solid var(--color-border) !important;
+  padding-left: 24px !important;
+}
+
+/* --- BOTÕES E DIFERENCIAÇÃO VISUAL --- */
+.sp-btn,
+.btn,
+button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+  padding: 8px 16px !important;
+  border-radius: var(--border-radius-md) !important; /* cantos suavemente arredondados 8px */
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+  gap: 8px !important;
+}
+
+/* Botões Primários: Fundo Verde e Texto Branco */
+.sp-btn-primary,
+button[type="submit"],
+button.bg-blue-600,
+button.bg-indigo-650,
+button.bg-indigo-600 {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.sp-btn-primary:hover,
+button[type="submit"]:hover,
+button.bg-blue-600:hover,
+button.bg-indigo-650:hover,
+button.bg-indigo-600:hover {
+  background-color: var(--color-primary-dark) !important;
+  box-shadow: var(--shadow-sm) !important; /* destaque com sombra sutil */
+}
+
+/* Botões Secundários: Fundo Branco, Borda Cinza, Texto Escuro */
+.sp-btn-secondary,
+button.bg-gray-100,
+button.border-slate-205,
+button.bg-white {
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.sp-btn-secondary:hover,
+button.bg-gray-100:hover,
+button.bg-white:hover {
+  background-color: var(--color-bg-hover) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary-dark) !important;
+}
+
+/* --- HIGHLIGHT CARDS DE MÉTRICA NO DASHBOARD E MODAIS COM SHADOW-SM --- */
+.sp-metric-card,
+.sp-card,
+.dashboard-card,
+.card,
+.sp-modal-container {
+  box-shadow: var(--shadow-sm) !important; /* sombra sutil de 0 2px 4px rgba(0,0,0,0.05) */
+  border-radius: var(--border-radius-md) !important; /* --border-radius-md: 8px */
+}
+
+/* Prevent dark-mode text-color leakage across standard Tailwind classes */
+.text-slate-100,
+.text-slate-200,
+.text-slate-300,
+.text-slate-400,
+.dark\:text-slate-100,
+.dark\:text-slate-200,
+.dark\:text-slate-300 {
+  color: var(--color-text-primary) !important;
+}
+
+.text-slate-500,
+.text-slate-600 {
+  color: var(--color-text-secondary) !important;
+}
+
+/* --- MODAIS DE ACORDO COM BUG 3 --- */
+.sp-modal-overlay,
+.modal-overlay,
+[class*="modal-backdrop"] {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100 !important; /* Stack above EVERYTHING */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  background-color: rgba(0, 0, 0, 0.65) !important; /* Homogeneous dark overlay */
+  backdrop-filter: blur(4px) !important;
+}
+
+.sp-modal-container,
+.modal-container {
+  background-color: var(--color-white) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-lg) !important;
+  max-width: 600px !important; /* Largeur max coherent */
+  width: 100% !important;
+  max-height: 90vh !important; /* Altura max coherent */
+  overflow-y: auto !important; /* Rolagem interna */
+  padding: 0 !important;
+  margin: auto !important;
+  position: relative !important;
+  z-index: 101 !important;
+  border: 1px solid var(--color-border) !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Styled steps/timeline cards container spacer gap */
+.sp-timeline-container,
+.sp-wizard-container,
+.timeline-container,
+.wizard-container {
+  max-width: 100% !important;
+  gap: var(--space-4) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin-bottom: var(--space-4) !important;
+}
+
+.sp-timeline-item,
+.timeline-item,
+.step-card {
+  max-width: 100% !important;
+  margin-bottom: var(--space-3) !important;
+}
+
+
+/* ==========================================================================
+   POLIMENTO SÊNIOR E CORREÇÕES CRÍTICAS (WCAG & CONTRASTE) (BUGS 1, 2, 3, 4)
+   ========================================================================== */
+
+/* 1. CORREÇÃO DE CONTRASTE NOS BADGES */
+
+/* Regra estrita de contraste para fundos intensos/escuros - Texto obrigatoriamente Branco */
+.sp-badge-indeferido,
+.sp-badge-erro,
+.sp-badge-critico,
+span.bg-rose-100,
+span.text-rose-800,
+span[class*="bg-rose-"][class*="text-rose-"],
+span[class*="bg-red-"][class*="text-red-"],
+span[class*="bg-red-600"],
+span[class*="bg-rose-600"] {
+  background-color: #c0392b !important; /* Vermelho escuro/intenso */
+  color: #ffffff !important;           /* Texto 100% Branco para WCAG AA/AAA */
+  border: 1px solid #a83226 !important;
+  font-weight: 750 !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.15);
+}
+
+/* Modality Badges (AC, PcD, Negros) - Padronização com fundo cinza-azulado bem suave e texto escuro */
+span.bg-slate-100.text-slate-700,
+span.bg-blue-100.text-blue-800,
+span.bg-indigo-100.text-indigo-850,
+span[class*="bg-indigo-"][class*="text-indigo-"],
+span[class*="bg-blue-"][class*="text-blue-"],
+span[class*="bg-slate-150"] {
+  background-color: #e2e8f0 !important; /* Fundo cinza/azulado suave */
+  color: #1e293b !important;           /* Texto escuro com excelente contraste */
+  border: 1px solid #cbd5e1 !important;
+  font-weight: 700 !important;
+  border-radius: 4px !important;
+  padding: 3px 8px !important;
+  font-size: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Fundo claro para badges padrão - Texto escuro admissível */
+.sp-badge-success,
+.sp-badge-publicado,
+.sp-badge-em-andamento,
+span[class*="bg-emerald-"] {
+  background-color: #e8f5ee !important;
+  color: #1a6b3a !important;
+  border: 1px solid #c2e6d1 !important;
+}
+
+.sp-badge-neutral,
+.sp-badge-rascunho,
+.sp-badge-inativo {
+  background-color: #f0f3f1 !important;
+  color: #5a6a60 !important;
+  border: 1px solid #dde3e0 !important;
+}
+
+
+/* 2. REDESIGN E POLIMENTO VISUAL DO MODAL (Ex: Dossiê do Candidato) */
+
+/* Garante que o container do modal tenha bordas arredondadas generosas e excelente sombra */
+div.fixed.inset-0.z-50 > div.bg-white,
+div.fixed.inset-0.z-50 > div.bg-white.dark\:bg-slate-800,
+.sp-modal-container {
+  border-radius: 16px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid var(--color-border) !important;
+  background-color: var(--color-white) !important;
+  overflow: hidden !important;
+}
+
+/* Cabeçalho do modal - Fundo 100% Branco, sem cinza, com linha sutil inferior de separação */
+div.fixed.inset-0.z-50 .border-b,
+div.fixed.inset-0.z-50 div.p-4.border-b {
+  background-color: var(--color-white) !important;
+  background: var(--color-white) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  padding: 24px 32px !important; /* padding amplo e proporcional */
+}
+
+/* Interior do modal / Corpo - Padding generoso de 32px e uniforme */
+div.fixed.inset-0.z-50 form.p-5,
+div.fixed.inset-0.z-50 .p-5:not(.border-b):not(.border-t) {
+  padding: 32px !important;
+}
+
+/* Organização de Informações do Candidato em Grid de 2 colunas com Gap de 24px */
+div.fixed.inset-0.z-50 .grid.grid-cols-2 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 24px !important;
+}
+
+/* No Dossiê, o endereço ocupa as 2 colunas por padrão (col-span-2) */
+div.fixed.inset-0.z-50 .grid.grid-cols-2 .col-span-2 {
+  grid-column: span 2 / span 2 !important;
+}
+
+/* Rodapé / Área de Botões no Modal - Margem superior de 32px, flexbox alinhado à direita com gap de 16px */
+div.fixed.inset-0.z-50 .pt-4.flex.justify-between,
+div.fixed.inset-0.z-50 .border-t {
+  margin-top: 32px !important;
+  padding: 20px 32px !important; /* Recuado das bordas laterais para nunca encostar na janela */
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 16px !important;
+  border-top: 1px solid var(--color-border) !important;
+  background-color: var(--color-white) !important;
+}
+
+/* Alinhamento dos botões de homologação e indeferimento dentro do rodapé */
+div.fixed.inset-0.z-50 .pt-4.flex.justify-between .flex.gap-1 {
+  display: flex !important;
+  gap: 16px !important;
+  margin-right: auto !important; /* Mantém botões de ação à esquerda e os secundários ou fechar à direita */
+}
+
+/* Garantia que os botões do rodapé tenham espaçamento e tamanhos consistentes */
+div.fixed.inset-0.z-50 .pt-4.flex.justify-between button,
+div.fixed.inset-0.z-50 .border-t button {
+  min-height: 38px !important;
+  padding: 8px 16px !important;
+  font-weight: 700 !important;
+}
+
+
+/* 3. ESPAÇAMENTO DE CARDS E GRIDS EM CONVOCAÇÕES */
+
+/* Gap de 24px no container que segura os cards de editais em andamento (Convocações Ativas) */
+#active-convocacoes-list,
+.active-convocacoes-list {
+  display: grid !important;
+  gap: 24px !important;
+}
+
+/* Margem de respiro entre a tabela de controle de presenças e a seção cronológica/linha do tempo */
+#table-presenca-realtime,
+#tabela-convocados-card,
+.tabela-convocados-card {
+  margin-bottom: 32px !important;
+}
+
+
+/* 4. REFINAMENTO DE ÍCONES E INPUTS */
+
+/* Correção da Lupa de Busca: ajuste de padding-left para texto não encavalar no placeholder */
+.sp-search-input,
+input[placeholder*="Busca"],
+input[placeholder*="Pesquisa"],
+input[placeholder*="filtrar"],
+input[placeholder*="Filtrar"] {
+  padding-left: 42px !important; /* espaço seguro para o texto começar após o ícone */
+}
+
+/* Ajuste fino na posição vertical e horizontal do ícone de busca absoluto */
+.sp-search-icon,
+.search-icon,
+input[placeholder*="Busca"] ~ svg,
+input[placeholder*="Busca"] ~ i {
+  left: 14px !important;
+}
+
+/* Centralização de ícones nos cards de métricas do Dashboard e Auditoria (círculo perfeito) */
+.sp-metric-card .sp-metric-icon,
+#auditoria-summary-cards div.w-10.h-10,
+div[class*="metric-icon"],
+.sp-metric-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 44px !important;       /* Largura e altura idênticas */
+  height: 44px !important;      /* Largura e altura idênticas */
+  min-width: 44px !important;
+  min-height: 44px !important;
+  border-radius: 50% !important; /* Círculo perfeito */
+  padding: 0 !important;
+  line-height: normal !important;
+}
+
+/* Ajuste dos ícones internos no centro exato do container circular */
+.sp-metric-card .sp-metric-icon i,
+#auditoria-summary-cards div.w-10.h-10 i,
+.sp-metric-icon i,
+.sp-metric-icon svg {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: auto !important;
+  font-size: 20px !important; /* tamanho de exibição equilibrado */
+  line-height: normal !important;
+}
+
+
+/* ==========================================================================
+   SIDEBAR REDESIGN - CLEAN, MODERN & HIGH-CONTRAST SOLID WHITE
+   ========================================================================== */
+
+#sidebar {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  color: var(--color-text-primary) !important;
+  border-right: 1px solid var(--color-border) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  position: fixed !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  z-index: 40 !important;
+}
+
+/* Offset the main layout columns when the sidebar is fixed to ensure zero overlapping */
+@media (min-width: 1024px) {
+  div#root > div > div.flex-1.flex-col {
+    grid-column-start: 2 !important;
+  }
+}
+
+/* Header/Logo Section inside Sidebar */
+#sidebar div.h-\[60px\] {
+  border-bottom: 1px solid var(--color-border) !important;
+  background-color: #FFFFFF !important;
+}
+
+#sidebar div.h-\[60px\] span {
+  color: var(--color-primary) !important;
+}
+
+#sidebar div.h-\[60px\] .rounded-full {
+  background-color: var(--color-primary-light) !important;
+  color: var(--color-primary) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+#sidebar div.h-\[60px\] button {
+  color: var(--color-primary) !important;
+}
+
+#sidebar div.h-\[60px\] button:hover {
+  background-color: #F3F4F6 !important;
+}
+
+/* Sidebar Navigation container */
+#sidebar-nav {
+  padding: 12px 0 !important;
+}
+
+#sidebar-nav div.border-t {
+  border-color: var(--color-border) !important;
+  margin-top: 12px !important;
+  margin-bottom: 12px !important;
+}
+
+/* Base menu items buttons */
+#sidebar-nav button {
+  color: var(--color-primary) !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-bottom: 4px !important;
+  width: auto !important;
+}
+
+#sidebar-nav button svg {
+  color: var(--color-primary) !important;
+  opacity: 0.8 !important;
+  transition: all 0.2s ease !important;
+}
+
+#sidebar-nav button span {
+  color: var(--color-primary) !important;
+  opacity: 0.85 !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Expanded Sidebar items */
+#sidebar:not([class*="w-[64px]"]) #sidebar-nav button {
+  padding: 12px 16px !important;
+  margin-left: 8px !important;
+  margin-right: 8px !important;
+  border-radius: 6px !important;
+  border-left: 4px solid transparent !important;
+}
+
+#sidebar:not([class*="w-[64px]"]) #sidebar-nav button:not(.font-bold):hover {
+  background-color: #F3F4F6 !important;
+  border-left: 4px solid transparent !important;
+}
+
+#sidebar:not([class*="w-[64px]"]) #sidebar-nav button.font-bold {
+  background-color: rgba(26, 107, 58, 0.08) !important;
+  border-left: 4px solid var(--color-primary) !important;
+  border-radius: 0 6px 6px 0 !important;
+  padding-left: 12px !important; /* Offset border to remain perfectly in alignment */
+}
+
+/* Collapsed Sidebar items */
+#sidebar[class*="w-[64px]"] #sidebar-nav button {
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 6px !important;
+  border-left: 3px solid transparent !important;
+}
+
+#sidebar[class*="w-[64px]"] #sidebar-nav button:not(.font-bold):hover {
+  background-color: #F3F4F6 !important;
+}
+
+#sidebar[class*="w-[64px]"] #sidebar-nav button.font-bold {
+  background-color: rgba(26, 107, 58, 0.08) !important;
+  border-left: 3px solid var(--color-primary) !important;
+  border-radius: 0 6px 6px 0 !important;
+}
+
+/* Common text & icon improvements on Hover & Active */
+#sidebar-nav button:hover svg {
+  opacity: 1 !important;
+  transform: translateX(2px);
+}
+
+#sidebar[class*="w-[64px]"] #sidebar-nav button:hover svg {
+  transform: none !important;
+}
+
+#sidebar-nav button:hover span {
+  opacity: 1 !important;
+  color: var(--color-primary-dark) !important;
+}
+
+#sidebar-nav button.font-bold svg,
+#sidebar-nav button.font-bold span {
+  opacity: 1 !important;
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
+}
+
+/* Footer Section / general operator info */
+#sidebar > div:last-child,
+#sidebar .bg-black\/10 {
+  margin-top: auto !important;
+  background-color: #FFFFFF !important;
+  border-top: 1px solid var(--color-border) !important;
+  padding: 16px !important;
+}
+
+#sidebar > div:last-child p {
+  color: var(--color-text-secondary) !important;
+}
+
+#sidebar > div:last-child p.font-bold {
+  color: var(--color-text-primary) !important;
+}
+
+#sidebar > div:last-child .w-\[30px\] {
+  background-color: var(--color-primary-light) !important;
+  color: var(--color-primary) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+/* ==========================================================================
+   SELECTPRO PREMIUM CSS CORRECTIONS & STYLE UPGRADES
+   ========================================================================== */
+
+/* 1. MÓDULO AVALIAÇÕES: Estilização do Lançador de Notas, Sliders e Empty State */
+
+/* Range inputs: track slider & bolinha institutional green (var(--color-primary)) */
+input[type="range"].custom-slider,
+.notas-slider input[type="range"],
+#lancar-notas-container input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"].custom-slider:focus,
+.notas-slider input[type="range"]:focus,
+#lancar-notas-container input[type="range"]:focus {
+  outline: none;
+}
+
+/* Track background sutil styling */
+input[type="range"].custom-slider::-webkit-slider-runnable-track,
+.notas-slider input[type="range"]::-webkit-slider-runnable-track,
+#lancar-notas-container input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  background: var(--color-border) !important;
+  border-radius: 9999px;
+  border: none;
+}
+
+/* Bolinha verde institutional (var(--color-primary)) */
+input[type="range"].custom-slider::-webkit-slider-thumb,
+.notas-slider input[type="range"]::-webkit-slider-thumb,
+#lancar-notas-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 9999px;
+  background: var(--color-primary) !important;
+  border: 2px solid var(--color-white) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  margin-top: -6px; /* Senta perfeitamente sobre o track */
+  transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
+input[type="range"].custom-slider::-webkit-slider-thumb:hover,
+.notas-slider input[type="range"]::-webkit-slider-thumb:hover,
+#lancar-notas-container input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+  background: var(--color-primary-dark) !important;
+}
+
+/* Compatibilidade Firefox */
+input[type="range"].custom-slider::-moz-range-track,
+.notas-slider input[type="range"]::-moz-range-track,
+#lancar-notas-container input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 6px;
+  background: var(--color-border) !important;
+  border-radius: 9999px;
+}
+
+input[type="range"].custom-slider::-moz-range-thumb,
+.notas-slider input[type="range"]::-moz-range-thumb,
+#lancar-notas-container input[type="range"]::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  background: var(--color-primary) !important;
+  border: 2px solid var(--color-white) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease;
+}
+
+input[type="range"].custom-slider::-moz-range-thumb:hover,
+.notas-slider input[type="range"]::-moz-range-thumb:hover,
+#lancar-notas-container input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.18);
+  background: var(--color-primary-dark) !important;
+}
+
+/* Painel Lançador de Notas: Box-shadow Superior Profundo */
+#lancar-notas-panel,
+#active-lancador-panel {
+  box-shadow: 0 -12px 30px rgba(26, 107, 58, 0.12) !important;
+  border-top: 1px solid var(--color-border) !important;
+}
+
+/* Nenhum candidato selecionado: Visual Polido e Sofisticado */
+#empty-state-avaliacoes,
+.empty-selection-card {
+  background: var(--color-white) !important;
+  border: 1px dashed var(--color-border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+
+/* 2. MÓDULO CONVOCAÇÕES: Correção de Cards se encostando no Grid */
+#active-convocacoes-list,
+.convocacoes-list-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)) !important;
+  gap: 24px !important;
+}
+
+
+/* 3. MÓDULO ADMINISTRAÇÃO > INSTITUIÇÕES: Alinhamento de Cards e Avatares */
+#tab-window-instituicoes > div.grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)) !important;
+  gap: 24px !important;
+}
+
+/* Alinhamento perfeito do círculo inicial com os títulos */
+#tab-window-instituicoes div.grid > div > div > div.flex {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+/* Editar Unidade: Botão Outline/Ghost Discreto e Alinhado */
+#tab-window-instituicoes div.grid button {
+  background-color: transparent !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-secondary) !important;
+  padding: 6px 14px !important;
+  border-radius: var(--radius-md) !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+}
+
+#tab-window-instituicoes div.grid button:hover {
+  background-color: var(--color-primary-light) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+}
+
+
+/* 4. MÓDULO ADMINISTRAÇÃO > CONFIGURAÇÕES: Limite nos Inputs e Cards para Critérios */
+#tab-window-configuracoes {
+  max-width: 800px !important;
+  margin-left: 0 !important;
+}
+
+/* Critérios de Desempate como Cards draggables visuais */
+#tab-window-configuracoes div.space-y-2 > div {
+  background-color: var(--color-white) !important;
+  padding: 12px 16px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  margin-bottom: 8px !important;
+  box-shadow: var(--shadow-sm) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  transition: var(--transition) !important;
+}
+
+#tab-window-configuracoes div.space-y-2 > div:hover {
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--color-primary-mid) !important;
+}
+
+#tab-window-configuracoes div.space-y-2 > div .ti-grip-vertical {
+  cursor: grab !important;
+  font-size: 16px !important;
+  color: var(--color-text-muted) !important;
+  margin-right: 6px !important;
+}
+
+#tab-window-configuracoes div.space-y-2 > div .ti-grip-vertical:active {
+  cursor: grabbing !important;
+}
+
+
+/* 5. MÓDULO EDITAIS: Efeito de Papel Oficial / Jornalismo dos Anos 90 */
+#edital-document-paper {
+  background-color: #fcfbf9 !important;
+  border: 1px solid #d4cbbe !important;
+  position: relative !important;
+  font-family: 'Georgia', 'Times New Roman', serif !important;
+  color: #1a1a1a !important;
+  line-height: 1.85 !important;
+  /* Sombra dupla empilhada 3D */
+  box-shadow: 
+    0 1px 3px rgba(0,0,0,0.1),
+    0 10px 20px rgba(0,0,0,0.05),
+    0 20px 40px rgba(0,0,0,0.05),
+    5px 5px 0px #f2ede4,
+    10px 10px 0px #ebd9c8 !important;
+  transition: transform 0.2s ease !important;
+}
+
+#edital-document-paper:hover {
+  transform: translateY(-2px);
+}
+
+/* Ajustes de tabelas dentro do documento oficial em estilo jornalístico clássico */
+#edital-document-paper table {
+  border: 1.5px solid #000000 !important;
+}
+
+#edital-document-paper th,
+#edital-document-paper td {
+  border: 1px solid #000000 !important;
+  color: #000000 !important;
+}
+
+#edital-document-paper thead tr {
+  background-color: #f0eae1 !important;
+}
+
+/* ==========================================================================
+   CONVOCAÇÕES REDESIGN & SP-BADGE ALIGNMENT
+   ========================================================================== */
+
+/* 1. Redesenho do container de cartões de convocações */
+.animate-fade-in-up {
+  opacity: 0;
+  animation: spSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+#active-convocacoes-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important; /* Tighter layout to prevent card overflow */
+  gap: 24px !important; /* Spacing gap-6 sutil e consistente */
+}
+
+@media (max-width: 640px) {
+  #active-convocacoes-list {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* 2. Refinamento dos cartões individuais de convocação (.sp-card) */
+#active-convocacoes-list .sp-card {
+  padding: 14px 16px !important; /* Reduced density padding */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  background-color: var(--color-white) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 0 1px 3px rgba(26, 107, 58, 0.01) !important;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out !important; /* Snappier 0.2s transition */
+}
+
+#active-convocacoes-list .sp-card:hover {
+  transform: translateY(-2px) !important; /* Subtle hover lift */
+  box-shadow: 0 10px 15px -3px rgba(26, 107, 58, 0.04), 0 4px 6px -4px rgba(26, 107, 58, 0.02) !important; /* Subtle shadow-lg only on active hover */
+  border-color: var(--color-primary-mid) !important;
+}
+
+#active-convocacoes-list .sp-card.selected-card {
+  border-color: var(--color-primary) !important;
+  background-color: rgba(26, 107, 58, 0.01) !important;
+  box-shadow: 0 0 0 2px rgba(26, 107, 58, 0.06) !important;
+}
+
+/* Tipografia elegante para títulos e datas na convocação */
+#active-convocacoes-list .sp-card h3 {
+  font-family: var(--font-family) !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: var(--color-text-primary) !important;
+  text-transform: none !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Detalhes Bento de cargo, data e local */
+#active-convocacoes-list .sp-card .bento-details {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 4px !important; /* Reduced gap */
+  padding: 8px 10px !important; /* Reduced padding */
+  border-radius: var(--radius-md) !important;
+  background-color: #fafbfc !important;
+  border: 1px solid rgba(221, 232, 225, 0.4) !important;
+}
+
+#active-convocacoes-list .sp-card .bento-details .label {
+  font-size: 10px !important; /* Slightly smaller label size */
+  color: var(--color-text-muted) !important;
+  font-weight: 500 !important;
+}
+
+#active-convocacoes-list .sp-card .bento-details .value {
+  font-size: 10px !important; /* Slightly smaller value size */
+  color: var(--color-text-secondary) !important;
+  font-weight: 600 !important;
+}
+
+/* 3. Atualização no estilo de .sp-badge (Status e Presença) */
+.sp-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--radius-full) !important;
+  padding: 2px 8px !important; /* Compact padding */
+  font-size: 10.5px !important;
+  font-weight: 700 !important; /* Extra contrast weight */
+  line-height: 1 !important;
+  text-align: center !important;
+  height: auto !important;
+  min-height: 18px !important;
+  border: 1px solid rgba(26, 107, 58, 0.06) !important; /* Thinner border */
+  transition: all 0.2s ease-in-out !important;
+}
+
+/* Tons mais suaves de opacidade menor para fundo e altíssimo contraste de texto */
+.sp-badge-success,
+.sp-badge-publicado,
+.sp-badge-em-andamento,
+.sp-badge-ativo,
+.sp-badge-convocacao {
+  background-color: rgba(26, 107, 58, 0.06) !important;
+  color: #165b30 !important;
+  border-color: rgba(26, 107, 58, 0.12) !important;
+}
+
+.sp-badge-neutral,
+.sp-badge-rascunho,
+.sp-badge-inativo {
+  background-color: rgba(90, 106, 96, 0.06) !important;
+  color: #2b3a30 !important;
+  border-color: rgba(90, 106, 96, 0.12) !important;
+}
+
+.sp-badge-recurso,
+.sp-badge-pendente {
+  background-color: rgba(181, 119, 0, 0.05) !important;
+  color: #835600 !important;
+  border-color: rgba(181, 119, 0, 0.12) !important;
+}
+
+.sp-badge-encerrado,
+.sp-badge-indeferido {
+  background-color: rgba(176, 48, 36, 0.05) !important;
+  color: #8c241a !important;
+  border-color: rgba(176, 48, 36, 0.12) !important;
+}
+
+/* ==========================================================================
+   PRINT MEDIA QUERIES - BEAUTIFUL AND PROFESSIONAL EDITAIS PRINTING
+   ========================================================================== */
+
+@media print {
+  /* 1. Hide all non-printable elements */
+  #sidebar,
+  header,
+  footer,
+  aside,
+  #reading-accessibility-panel,
+  #btn-retornar,
+  button,
+  .no-print,
+  .sp-toast-container,
+  #editais-root-container .pb-4.border-b.border-gray-200,
+  div.pb-4.border-b.border-gray-200,
+  i.ti-printer,
+  i.ti-file-text {
+    display: none !important;
+  }
+
+  /* 2. Reset full-page container styles for print output */
+  html, body, #root, .min-h-screen, .flex-1, main {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 3. Strip wrappers and cards */
+  #editais-root-container,
+  #editais-root-container > div,
+  .bg-white,
+  .sp-card,
+  .card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 4. Style the edital document sheet beautifully */
+  #edital-document-paper {
+    background: white !important;
+    color: black !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: static !important;
+    overflow: visible !important;
+    display: block !important;
+    box-shadow: none !important;
+  }
+
+  /* 5. Ensure good contrast and page break rules */
+  table {
+    page-break-inside: avoid !important;
+    border-color: black !important;
+  }
+  tr, p, h2, h3, h4 {
+    page-break-inside: avoid !important;
+  }
+  thead {
+    display: table-header-group !important;
+  }
+}
+
+
+
