@@ -2383,6 +2383,11 @@ input[type="range"].custom-slider::-moz-range-thumb:hover,
    PRINT MEDIA QUERIES - BEAUTIFUL AND PROFESSIONAL EDITAIS PRINTING
    ========================================================================== */
 
+@page {
+  size: A4;
+  margin: 15mm 12mm;
+}
+
 @media print {
   /* 1. Hide all non-printable elements */
   #sidebar,
@@ -2412,11 +2417,13 @@ input[type="range"].custom-slider::-moz-range-thumb:hover,
     display: block !important;
     box-shadow: none !important;
     border: none !important;
+    overflow: visible !important;
   }
 
   main {
     padding: 0 !important;
     margin: 0 !important;
+    overflow: visible !important;
   }
 
   /* 3. Strip wrappers and cards */
@@ -2432,6 +2439,7 @@ input[type="range"].custom-slider::-moz-range-thumb:hover,
     margin: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
+    overflow: visible !important;
   }
 
   /* 4. Style the edital document sheet beautifully */
@@ -2441,25 +2449,54 @@ input[type="range"].custom-slider::-moz-range-thumb:hover,
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
     overflow: visible !important;
     display: block !important;
-    box-shadow: none !important;
   }
 
-  /* 5. Ensure good contrast and page break rules */
-  table {
-    page-break-inside: avoid !important;
+  /* 5. Remove all overflow wrappers inside the document — these cause scrollbars in PDF */
+  #edital-document-paper .overflow-x-auto,
+  #edital-document-paper [class*="overflow"] {
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 6. Tables: fill page width and remove min-width constraints */
+  #edital-document-paper table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
     border-color: black !important;
   }
-  tr, p, h2, h3, h4 {
+
+  #edital-document-paper th,
+  #edital-document-paper td {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 7. Page break rules */
+  table {
+    page-break-inside: auto !important;
+    border-color: black !important;
+  }
+  tr {
     page-break-inside: avoid !important;
+  }
+  h2, h3, h4 {
+    page-break-after: avoid !important;
   }
   thead {
     display: table-header-group !important;
+  }
+
+  /* 8. Decorative elements that don't print well */
+  #edital-document-paper .shadow-\[0_1px_3px_rgba\(0\,0\,0\,0\.1\)\,_0_10px_20px_rgba\(0\,0\,0\,0\.05\)\,_0_20px_40px_rgba\(0\,0\,0\,0\.05\)\,_5px_5px_0px_\#f2ede4\,_10px_10px_0px_\#ebd9c8\] {
+    box-shadow: none !important;
   }
 }
 

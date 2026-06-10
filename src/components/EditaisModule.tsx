@@ -62,6 +62,7 @@ interface CargoDraft {
 interface CronogramaEventoDraft {
   id: string;
   data: string;
+  dataFim?: string;
   evento: string;
 }
 
@@ -356,6 +357,15 @@ export default function EditaisModule({
       ...prev,
       cronogramaEventos: (prev.cronogramaEventos || []).map(item =>
         item.id === id ? { ...item, data: value } : item
+      )
+    }));
+  };
+
+  const handleCronogramaEventoDataFimChange = (id: string, value: string | undefined) => {
+    setEditalDraft(prev => ({
+      ...prev,
+      cronogramaEventos: (prev.cronogramaEventos || []).map(item =>
+        item.id === id ? { ...item, dataFim: value } : item
       )
     }));
   };
@@ -1221,13 +1231,20 @@ export default function EditaisModule({
 
       {/* ----------------- VISTA 2: FORMULÁRIO WIZARD (CRIAR EDITAL) ----------------- */}
       {activeView === 'wizard' && (
-        <div className="bg-white p-6 md:p-8 rounded-xl border border-gray-200 shadow-md space-y-6 max-w-4xl mx-auto text-gray-800">
-          
+        <div className="bg-white rounded-xl border border-[var(--color-border)] shadow-[var(--shadow-md)] w-full flex flex-col overflow-hidden" style={{ minHeight: 'calc(100vh - 130px)' }}>
+
           {/* Header */}
-          <div className="flex justify-between items-center pb-4 border-b border-gray-200">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Formulário de Elaboração</span>
-              <h2 className="text-xl font-bold text-gray-900">Novo Edital de Processo Seletivo</h2>
+          <div className="flex justify-between items-center px-6 py-4 border-b border-[var(--color-border)] bg-gradient-to-r from-[var(--color-primary-light)] to-white shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-primary)] flex items-center justify-center shadow-sm shrink-0">
+                <i className="ti ti-file-plus text-white text-xl"></i>
+              </div>
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-primary)]">Formulário de Elaboração</span>
+                <h2 className="text-lg font-bold text-[var(--color-text-primary)] leading-tight">
+                  {editingEditalId ? 'Editando Edital de Processo Seletivo' : 'Novo Edital de Processo Seletivo'}
+                </h2>
+              </div>
             </div>
             <button
               onClick={() => {
@@ -1235,68 +1252,92 @@ export default function EditaisModule({
                   setActiveView('list');
                 }
               }}
-              className="text-xs text-gray-500 hover:text-red-650 font-bold border border-gray-300 bg-gray-50 px-3 py-1.5 rounded-lg cursor-pointer transition-all"
+              className="text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-danger)] hover:border-[var(--color-danger)] font-bold border border-[var(--color-border)] bg-white px-4 py-2 rounded-lg cursor-pointer transition-all shadow-sm inline-flex items-center gap-1.5"
             >
+              <i className="ti ti-x text-sm"></i>
               Cancelar e Sair
             </button>
           </div>
 
-          {/* Stepper progress track bar */}
-          <div className="sp-wizard-container relative mb-6 rounded-xl border border-slate-205 select-none font-sans">
-            <div className="sp-wizard-steps relative w-full flex items-center justify-between">
-              {/* Connector Line behind steps */}
-              <div className="absolute top-[14px] left-[5%] right-[5%] h-[2px] bg-slate-200 z-0">
-                <div 
-                  className="h-full bg-[var(--color-primary)] transition-all duration-300"
-                  style={{ width: `${((wizardStep - 1) / 6) * 100}%` }}
-                ></div>
-              </div>
+          {/* Main Body: Left Sidebar Stepper + Right Scrollable Content */}
+          <div className="flex flex-1 overflow-hidden min-h-0">
 
-              {WIZARD_STAGES.map((st, i) => {
+            {/* Vertical Step Sidebar */}
+            <div className="w-52 shrink-0 bg-[var(--color-primary-light)]/60 border-r border-[var(--color-border)] flex flex-col py-5 px-3 gap-1 overflow-y-auto">
+              {WIZARD_STAGES.map((st) => {
                 const isActive = wizardStep === st.step;
                 const isPassed = wizardStep > st.step;
-                
-                let stepClass = "sp-wizard-step sp-wizard-step-future";
-                if (isActive) stepClass = "sp-wizard-step sp-wizard-step-active";
-                else if (isPassed) stepClass = "sp-wizard-step sp-wizard-step-completed";
-
                 return (
-                  <div key={st.step} className={stepClass} style={{ zIndex: 2 }}>
-                    <div className="sp-wizard-circle">
-                      {isPassed ? (
-                        <i className="ti ti-check text-sm font-black"></i>
-                      ) : (
-                        st.step
+                  <div
+                    key={st.step}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all select-none ${
+                      isActive
+                        ? 'bg-white shadow-sm border border-[var(--color-border)]'
+                        : isPassed
+                        ? 'hover:bg-white/70 cursor-default'
+                        : 'opacity-50 cursor-default'
+                    }`}
+                  >
+                    <div
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-all ${
+                        isActive
+                          ? 'bg-[var(--color-primary)] text-white shadow-sm'
+                          : isPassed
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-white text-gray-400 border-2 border-gray-200'
+                      }`}
+                    >
+                      {isPassed ? <i className="ti ti-check text-xs font-black"></i> : st.step}
+                    </div>
+                    <div className="min-w-0">
+                      <span className={`text-xs font-bold block truncate ${
+                        isActive ? 'text-[var(--color-primary)]' : isPassed ? 'text-gray-700' : 'text-gray-400'
+                      }`}>{st.name}</span>
+                      {isActive && (
+                        <span className="text-[9px] text-[var(--color-text-muted)] font-medium">Em andamento</span>
                       )}
                     </div>
-                    <span className="sp-wizard-label hidden sm:inline-block font-bold">
-                      {st.name}
-                    </span>
                   </div>
                 );
               })}
+
+              {/* Progress bar at bottom of sidebar */}
+              <div className="mt-auto pt-4 border-t border-[var(--color-border)] px-2">
+                <div className="flex justify-between text-[10px] text-[var(--color-text-muted)] font-semibold mb-1.5">
+                  <span>Progresso</span>
+                  <span>{Math.round(((wizardStep - 1) / 6) * 100)}%</span>
+                </div>
+                <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[var(--color-primary)] rounded-full transition-all duration-300"
+                    style={{ width: `${((wizardStep - 1) / 6) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
             </div>
-          </div>
+
+            {/* Scrollable Content Area */}
+            <div className="flex-1 overflow-y-auto min-w-0">
 
           {/* ---------------- STEP 1: IDENTIFICAÇÃO DO EDITAL ---------------- */}
           {wizardStep === 1 && (
-            <div className="space-y-6">
-              <div className="bg-blue-50 border-l-4 border-blue-600 p-3.5 rounded-r-lg">
-                <p className="text-xs text-blue-850 font-medium">
+            <div className="px-8 py-7 space-y-6">
+              <div className="bg-[var(--color-primary-light)] border-l-4 border-[var(--color-primary)] p-3.5 rounded-r-lg">
+                <p className="text-xs text-[var(--color-text-primary)] font-medium">
                   <strong>Etapa 1: Formatos de Identificação Geral.</strong> Insira os códigos de referência, datas e as autoridades responsáveis pelo edital formalmente. Todos os campos são obrigatórios.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* ID Número do Edital */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-4">
+                {/* Número do Edital — 1/3 */}
                 <div className="space-y-1">
-                  <label htmlFor="num-edital" className="text-xs font-bold text-gray-700 block">Número do Edital *</label>
+                  <label htmlFor="num-edital" className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wide block">Número do Edital *</label>
                   <input
                     id="num-edital"
                     type="text"
                     placeholder="Ex: 01/2026"
-                    className={`w-full p-2 border rounded-md text-sm bg-white text-gray-800 ${
-                      validationErrors.numero ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                    className={`w-full px-3 py-2 border rounded-lg text-sm bg-white text-[var(--color-text-primary)] transition-all ${
+                      validationErrors.numero ? 'border-red-500 focus:ring-1 focus:ring-red-400' : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]/20'
                     }`}
                     value={editalDraft.numero}
                     onChange={(e) => handleInputChange('numero', e.target.value)}
@@ -1306,13 +1347,13 @@ export default function EditaisModule({
                   )}
                 </div>
 
-                {/* Tipo de Edital */}
-                <div className="space-y-1">
-                  <label htmlFor="tipo-edital" className="text-xs font-bold text-gray-700 block">Tipo *</label>
+                {/* Tipo de Edital — 2/3 */}
+                <div className="md:col-span-2 space-y-1">
+                  <label htmlFor="tipo-edital" className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wide block">Tipo *</label>
                   <select
                     id="tipo-edital"
-                    className={`w-full p-2 border rounded-md text-sm bg-white text-gray-800 font-semibold ${
-                      validationErrors.tipo ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                    className={`w-full px-3 py-2 border rounded-lg text-sm bg-white text-[var(--color-text-primary)] font-semibold transition-all ${
+                      validationErrors.tipo ? 'border-red-500 focus:ring-1 focus:ring-red-400' : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]/20'
                     }`}
                     value={editalDraft.tipo}
                     onChange={(e) => handleInputChange('tipo', e.target.value)}
@@ -1326,15 +1367,15 @@ export default function EditaisModule({
                   )}
                 </div>
 
-                {/* Instituição Organizadora */}
+                {/* Instituição Organizadora — 1/3 */}
                 <div className="space-y-1">
-                  <label htmlFor="inst-org" className="text-xs font-bold text-gray-700 block">Instituição Organizadora *</label>
+                  <label htmlFor="inst-org" className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wide block">Instituição Organizadora *</label>
                   <input
                     id="inst-org"
                     type="text"
                     placeholder="Ex: HCPA"
-                    className={`w-full p-2 border rounded-md text-sm bg-white text-gray-800 ${
-                      validationErrors.instituicao ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                    className={`w-full px-3 py-2 border rounded-lg text-sm bg-white text-[var(--color-text-primary)] transition-all ${
+                      validationErrors.instituicao ? 'border-red-500 focus:ring-1 focus:ring-red-400' : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]/20'
                     }`}
                     value={editalDraft.instituicao}
                     onChange={(e) => handleInputChange('instituicao', e.target.value)}
@@ -1344,15 +1385,15 @@ export default function EditaisModule({
                   )}
                 </div>
 
-                {/* Instituição Realizadora */}
-                <div className="space-y-1">
-                  <label htmlFor="inst-real" className="text-xs font-bold text-gray-700 block">Instituição Realizadora *</label>
+                {/* Instituição Realizadora — 2/3 */}
+                <div className="md:col-span-2 space-y-1">
+                  <label htmlFor="inst-real" className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wide block">Instituição Realizadora *</label>
                   <input
                     id="inst-real"
                     type="text"
                     placeholder="Ex: FAURGS"
-                    className={`w-full p-2 border rounded-md text-sm bg-white text-gray-800 ${
-                      validationErrors.realizadora ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                    className={`w-full px-3 py-2 border rounded-lg text-sm bg-white text-[var(--color-text-primary)] transition-all ${
+                      validationErrors.realizadora ? 'border-red-500 focus:ring-1 focus:ring-red-400' : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]/20'
                     }`}
                     value={editalDraft.realizadora}
                     onChange={(e) => handleInputChange('realizadora', e.target.value)}
@@ -1362,14 +1403,14 @@ export default function EditaisModule({
                   )}
                 </div>
 
-                {/* Data de Publicação */}
+                {/* Data de Publicação — 1/3 */}
                 <div className="space-y-1">
-                  <label htmlFor="data-pub" className="text-xs font-bold text-gray-700 block">Data de Publicação *</label>
+                  <label htmlFor="data-pub" className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wide block">Data de Publicação *</label>
                   <input
                     id="data-pub"
                     type="date"
-                    className={`w-full p-2 border rounded-md text-sm bg-white text-gray-800 ${
-                      validationErrors.dataPublicacao ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                    className={`w-full px-3 py-2 border rounded-lg text-sm bg-white text-[var(--color-text-primary)] transition-all ${
+                      validationErrors.dataPublicacao ? 'border-red-500 focus:ring-1 focus:ring-red-400' : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]/20'
                     }`}
                     value={editalDraft.dataPublicacao}
                     onChange={(e) => handleInputChange('dataPublicacao', e.target.value)}
@@ -1379,52 +1420,52 @@ export default function EditaisModule({
                   )}
                 </div>
 
-                {/* Cidade e Estado */}
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="col-span-2 space-y-1">
-                    <label htmlFor="cidade" className="text-xs font-bold text-gray-700 block">Cidade *</label>
-                    <input
-                      id="cidade"
-                      type="text"
-                      placeholder="Ex: Porto Alegre"
-                      className={`w-full p-2 border rounded-md text-sm bg-white text-gray-800 ${
-                        validationErrors.cidade ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
-                      }`}
-                      value={editalDraft.cidade}
-                      onChange={(e) => handleInputChange('cidade', e.target.value)}
-                    />
-                    {validationErrors.cidade && (
-                      <span className="text-[10px] font-bold text-red-500 block">{validationErrors.cidade}</span>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <label htmlFor="estado" className="text-xs font-bold text-gray-700 block">Estado *</label>
-                    <input
-                      id="estado"
-                      type="text"
-                      placeholder="Ex: RS"
-                      maxLength={2}
-                      className={`w-full p-2 border rounded-md text-sm bg-white text-gray-800 ${
-                        validationErrors.estado ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
-                      }`}
-                      value={editalDraft.estado}
-                      onChange={(e) => handleInputChange('estado', e.target.value)}
-                    />
-                    {validationErrors.estado && (
-                      <span className="text-[10px] font-bold text-red-500 block">{validationErrors.estado}</span>
-                    )}
-                  </div>
+                {/* Cidade — 1/3 */}
+                <div className="space-y-1">
+                  <label htmlFor="cidade" className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wide block">Cidade *</label>
+                  <input
+                    id="cidade"
+                    type="text"
+                    placeholder="Ex: Porto Alegre"
+                    className={`w-full px-3 py-2 border rounded-lg text-sm bg-white text-[var(--color-text-primary)] transition-all ${
+                      validationErrors.cidade ? 'border-red-500 focus:ring-1 focus:ring-red-400' : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]/20'
+                    }`}
+                    value={editalDraft.cidade}
+                    onChange={(e) => handleInputChange('cidade', e.target.value)}
+                  />
+                  {validationErrors.cidade && (
+                    <span className="text-[10px] font-bold text-red-500">{validationErrors.cidade}</span>
+                  )}
                 </div>
 
-                {/* Nome do Coordenador */}
+                {/* Estado — 1/3 */}
                 <div className="space-y-1">
-                  <label htmlFor="coord-nome" className="text-xs font-bold text-gray-700 block">Coordenador da Comissão de Seleção *</label>
+                  <label htmlFor="estado" className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wide block">Estado *</label>
+                  <input
+                    id="estado"
+                    type="text"
+                    placeholder="Ex: RS"
+                    maxLength={2}
+                    className={`w-full px-3 py-2 border rounded-lg text-sm bg-white text-[var(--color-text-primary)] transition-all ${
+                      validationErrors.estado ? 'border-red-500 focus:ring-1 focus:ring-red-400' : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]/20'
+                    }`}
+                    value={editalDraft.estado}
+                    onChange={(e) => handleInputChange('estado', e.target.value)}
+                  />
+                  {validationErrors.estado && (
+                    <span className="text-[10px] font-bold text-red-500">{validationErrors.estado}</span>
+                  )}
+                </div>
+
+                {/* Coordenador — 2/3 */}
+                <div className="md:col-span-2 space-y-1">
+                  <label htmlFor="coord-nome" className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wide block">Coordenador da Comissão de Seleção *</label>
                   <input
                     id="coord-nome"
                     type="text"
                     placeholder="Ex: Prof. Dr. Francisco Silveira"
-                    className={`w-full p-2 border rounded-md text-sm bg-white text-gray-800 ${
-                      validationErrors.coordenadorNome ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                    className={`w-full px-3 py-2 border rounded-lg text-sm bg-white text-[var(--color-text-primary)] transition-all ${
+                      validationErrors.coordenadorNome ? 'border-red-500 focus:ring-1 focus:ring-red-400' : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]/20'
                     }`}
                     value={editalDraft.coordenadorNome}
                     onChange={(e) => handleInputChange('coordenadorNome', e.target.value)}
@@ -1434,15 +1475,15 @@ export default function EditaisModule({
                   )}
                 </div>
 
-                {/* Cargo do Coordenador */}
+                {/* Cargo do Coordenador — 1/3 */}
                 <div className="space-y-1">
-                  <label htmlFor="coord-cargo" className="text-xs font-bold text-gray-700 block">Cargo do Coordenador *</label>
+                  <label htmlFor="coord-cargo" className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wide block">Cargo do Coordenador *</label>
                   <input
                     id="coord-cargo"
                     type="text"
                     placeholder="Ex: Coordenador da Comissão de Seleção HCPA"
-                    className={`w-full p-2 border rounded-md text-sm bg-white text-gray-800 ${
-                      validationErrors.coordenadorCargo ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                    className={`w-full px-3 py-2 border rounded-lg text-sm bg-white text-[var(--color-text-primary)] transition-all ${
+                      validationErrors.coordenadorCargo ? 'border-red-500 focus:ring-1 focus:ring-red-400' : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]/20'
                     }`}
                     value={editalDraft.coordenadorCargo}
                     onChange={(e) => handleInputChange('coordenadorCargo', e.target.value)}
@@ -1457,9 +1498,9 @@ export default function EditaisModule({
 
           {/* ---------------- STEP 2: CARGOS E OCUPAÇÕES ---------------- */}
           {wizardStep === 2 && (
-            <div className="space-y-6">
-              <div className="bg-blue-50 border-l-4 border-blue-600 p-3.5 rounded-r-lg">
-                <p className="text-xs text-blue-850 font-medium">
+            <div className="px-8 py-7 space-y-6">
+              <div className="bg-[var(--color-primary-light)] border-l-4 border-[var(--color-primary)] p-3.5 rounded-r-lg">
+                <p className="text-xs text-[var(--color-text-primary)] font-medium">
                   <strong>Etapa 2: Cadastro de Cargos e Ocupações.</strong> Replique as funções que constarão no edital. Preencha os campos abaixo e clique em <strong>Adicionar Cargo</strong> para popular a tabela dinâmica.
                 </p>
               </div>
@@ -1581,29 +1622,40 @@ export default function EditaisModule({
                   {/* Vagas */}
                   <div className="space-y-1">
                     <label htmlFor="cargo-vagas" className="text-xs font-bold text-gray-700 block">Vagas *</label>
-                    <select
-                      id="cargo-vagas"
-                      className={`w-full p-2 border rounded-md text-sm bg-white text-gray-800 ${
-                        cargoErrors.vagas ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      value={tempCargo.vagas}
-                      onChange={(e) => handleCargoChange('vagas', e.target.value)}
-                    >
-                      <option value="">Selecione...</option>
-                      <option value="C.R.">C.R. (Cadastro Reserva)</option>
-                      <option value="1">1 vaga</option>
-                      <option value="2">2 vagas</option>
-                      <option value="3">3 vagas</option>
-                      <option value="4">4 vagas</option>
-                      <option value="5">5 vagas</option>
-                      <option value="6">6 vagas</option>
-                      <option value="7">7 vagas</option>
-                      <option value="8">8 vagas</option>
-                      <option value="9">9 vagas</option>
-                      <option value="10">10 vagas</option>
-                      <option value="15">15 vagas</option>
-                      <option value="20">20 vagas</option>
-                    </select>
+                    {tempCargo.vagas === 'C.R.' ? (
+                      <div className={`w-full p-2 border rounded-md text-sm bg-gray-50 text-gray-800 flex items-center justify-between ${cargoErrors.vagas ? 'border-red-500' : 'border-gray-300'}`}>
+                        <span className="font-medium text-blue-700">C.R. — Cadastro Reserva</span>
+                        <button
+                          type="button"
+                          onClick={() => handleCargoChange('vagas', '')}
+                          className="text-xs text-gray-400 hover:text-red-500 underline ml-2"
+                        >
+                          Alterar
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <input
+                          id="cargo-vagas"
+                          type="number"
+                          min={1}
+                          className={`flex-1 p-2 border rounded-md text-sm bg-white text-gray-800 ${
+                            cargoErrors.vagas ? 'border-red-500' : 'border-gray-300'
+                          }`}
+                          placeholder="Ex: 25"
+                          value={tempCargo.vagas}
+                          onChange={(e) => handleCargoChange('vagas', e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleCargoChange('vagas', 'C.R.')}
+                          className="px-2 py-1 border border-gray-300 rounded-md text-xs text-gray-600 bg-white hover:bg-gray-50 whitespace-nowrap"
+                          title="Cadastro Reserva"
+                        >
+                          C.R.
+                        </button>
+                      </div>
+                    )}
                     {cargoErrors.vagas && (
                       <span className="text-[9px] font-bold text-red-500">Campo obrigatório</span>
                     )}
@@ -1746,7 +1798,7 @@ export default function EditaisModule({
                                 <div className="flex justify-center items-center gap-1.5">
                                   <button
                                     onClick={() => handleEditCargo(cg)}
-                                    className="p-1 text-gray-500 hover:text-blue-600 hover:bg-gray-100 rounded transition-all cursor-pointer"
+                                    className="p-1 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-light)] rounded transition-all cursor-pointer"
                                     title="Editar Cargo"
                                   >
                                     <i className="ti ti-edit text-base"></i>
@@ -1779,9 +1831,9 @@ export default function EditaisModule({
 
           {/* ---------------- WIZARD STEPS 3, 4, 5 (CRAFTED) ---------------- */}
           {wizardStep === 3 && (
-            <div className="space-y-6">
-              <div className="bg-blue-50 border-l-4 border-blue-600 p-3.5 rounded-r-lg">
-                <p className="text-xs text-blue-800 font-medium leading-relaxed">
+            <div className="px-8 py-7 space-y-6">
+              <div className="bg-[var(--color-primary-light)] border-l-4 border-[var(--color-primary)] p-3.5 rounded-r-lg">
+                <p className="text-xs text-[var(--color-text-primary)] font-medium leading-relaxed">
                   <strong>Etapa 3 - Dos Benefícios Oficiais do HCPA.</strong> Selecione os benefícios que constarão no edital. O texto descritivo oficial de benefícios será gerado automaticamente para o rascunho de edital finalizada, conforme seus checkboxes, mas permanece editável.
                 </p>
               </div>
@@ -1804,13 +1856,13 @@ export default function EditaisModule({
                         key={bene}
                         className={`flex items-start gap-3 p-3 border rounded-xl cursor-pointer transition-all select-none ${
                           isChecked
-                            ? 'border-blue-500 bg-blue-50/50 text-blue-900 font-bold'
-                            : 'border-gray-200 hover:bg-gray-50 text-gray-700'
+                            ? 'border-[var(--color-primary)] bg-[var(--color-primary-light)] text-[var(--color-primary)] font-bold'
+                            : 'border-[var(--color-border)] hover:bg-[var(--color-primary-light)]/50 text-[var(--color-text-primary)]'
                         }`}
                       >
                         <input
                           type="checkbox"
-                          className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                          className="mt-1 h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer accent-[var(--color-primary)]"
                           checked={isChecked}
                           onChange={() => handleToggleBeneficio(bene)}
                         />
@@ -1852,9 +1904,9 @@ export default function EditaisModule({
           )}
 
           {wizardStep === 4 && (
-            <div className="space-y-6">
-              <div className="bg-blue-50 border-l-4 border-blue-600 p-3.5 rounded-r-lg">
-                <p className="text-xs text-blue-800 font-medium leading-relaxed">
+            <div className="px-8 py-7 space-y-6">
+              <div className="bg-[var(--color-primary-light)] border-l-4 border-[var(--color-primary)] p-3.5 rounded-r-lg">
+                <p className="text-xs text-[var(--color-text-primary)] font-medium leading-relaxed">
                   <strong>Etapa 4 - Cronograma de Eventos.</strong> Defina os prazos e marcos fundamentais do concurso. Você pode escolher uma data calendarizada ou definir como "A definir (*)" individualmente.
                 </p>
               </div>
@@ -1885,42 +1937,81 @@ export default function EditaisModule({
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {(editalDraft.cronogramaEventos || []).map((ev, index) => {
-                          const isADefinir = ev.data === '*';
+                          const hasDataFim = ev.dataFim !== undefined;
+                          const isInicioADefinir = ev.data === '*';
+                          const isFimADefinir = ev.dataFim === '*';
+
+                          const DateCell = ({ isADefinir, value, onChangeDate, onToggleADefinir }: {
+                            isADefinir: boolean;
+                            value: string;
+                            onChangeDate: (v: string) => void;
+                            onToggleADefinir: () => void;
+                          }) => isADefinir ? (
+                            <div className="flex items-center justify-between gap-2 p-1 bg-gray-50 border border-gray-200 rounded-md">
+                              <span className="text-[10px] font-mono font-extrabold text-[var(--color-text-secondary)] bg-[var(--color-neutral-bg)] px-1 rounded border border-[var(--color-border)]">* A definir</span>
+                              <button type="button" onClick={() => onChangeDate('')} className="text-[10px] text-gray-400 hover:text-[#2563eb] font-bold">Escolher data</button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1.5">
+                              <input
+                                type="date"
+                                className="w-full p-1.5 border border-gray-300 rounded-md text-xs bg-white text-gray-800 font-sans"
+                                value={value || ''}
+                                onChange={(e) => onChangeDate(e.target.value)}
+                              />
+                              <button type="button" onClick={onToggleADefinir} className="text-[10px] text-gray-600 hover:text-blue-600 hover:underline font-bold whitespace-nowrap" title="Marcar como 'A Definir'">* A definir</button>
+                            </div>
+                          );
+
                           return (
                             <tr key={ev.id} className="hover:bg-gray-50/50 align-middle">
                               <td className="py-2 px-3 text-center border-r border-gray-200 font-mono font-bold text-gray-500">
                                 {index + 1}
                               </td>
                               <td className="py-2 px-3 border-r border-gray-200">
-                                {isADefinir ? (
-                                  <div className="flex items-center justify-between gap-2 p-1 bg-gray-50 border border-gray-200 rounded-md">
-                                    <span className="text-[10px] font-mono font-extrabold text-[#2563eb] bg-blue-50 px-1 rounded">* A definir</span>
-                                    <button
-                                      type="button"
-                                      onClick={() => handleCronogramaEventoDataChange(ev.id, '')}
-                                      className="text-[10px] text-gray-400 hover:text-[#2563eb] font-bold"
-                                    >
-                                      Escolher data
-                                    </button>
-                                  </div>
-                                ) : (
+                                <div className="space-y-1.5">
+                                  {/* Data de Início */}
                                   <div className="flex items-center gap-1.5">
-                                    <input
-                                      type="date"
-                                      className="w-full p-1.5 border border-gray-300 rounded-md text-xs bg-white text-gray-800 font-sans"
-                                      value={ev.data || ''}
-                                      onChange={(e) => handleCronogramaEventoDataChange(ev.id, e.target.value)}
+                                    <DateCell
+                                      isADefinir={isInicioADefinir}
+                                      value={ev.data}
+                                      onChangeDate={(v) => handleCronogramaEventoDataChange(ev.id, v)}
+                                      onToggleADefinir={() => handleCronogramaEventoDataChange(ev.id, '*')}
                                     />
-                                    <button
-                                      type="button"
-                                      onClick={() => handleCronogramaEventoDataChange(ev.id, '*')}
-                                      className="text-[10px] text-gray-600 hover:text-blue-600 hover:underline font-bold whitespace-nowrap"
-                                      title="Marcar como 'A Definir'"
-                                    >
-                                      * A definir
-                                    </button>
+                                    {/* Botão toggle data final */}
+                                    {!hasDataFim ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleCronogramaEventoDataFimChange(ev.id, '')}
+                                        className="flex-shrink-0 px-1.5 py-1 border border-dashed border-gray-300 rounded text-[10px] text-gray-400 hover:border-blue-400 hover:text-blue-600 font-bold whitespace-nowrap"
+                                        title="Adicionar data de término"
+                                      >
+                                        + Término
+                                      </button>
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleCronogramaEventoDataFimChange(ev.id, undefined)}
+                                        className="flex-shrink-0 px-1.5 py-1 border border-blue-200 bg-blue-50 rounded text-[10px] text-blue-600 hover:bg-red-50 hover:border-red-200 hover:text-red-500 font-bold whitespace-nowrap"
+                                        title="Remover data de término"
+                                      >
+                                        ✕ Término
+                                      </button>
+                                    )}
                                   </div>
-                                )}
+                                  {/* Data de Término (condicional) */}
+                                  {hasDataFim && (
+                                    <div className="flex items-center gap-1.5 pl-1 border-l-2 border-blue-200">
+                                      <span className="text-[9px] font-bold text-blue-500 uppercase tracking-wide whitespace-nowrap">Até</span>
+                                      <DateCell
+                                        isADefinir={isFimADefinir}
+                                        value={ev.dataFim || ''}
+                                        onChangeDate={(v) => handleCronogramaEventoDataFimChange(ev.id, v)}
+                                        onToggleADefinir={() => handleCronogramaEventoDataFimChange(ev.id, '*')}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
                               </td>
                               <td className="py-2 px-3 border-r border-gray-200">
                                 <input
@@ -1964,9 +2055,9 @@ export default function EditaisModule({
           )}
 
           {wizardStep === 5 && (
-            <div className="space-y-6">
-              <div className="bg-blue-50 border-l-4 border-blue-600 p-3.5 rounded-r-lg">
-                <p className="text-xs text-blue-800 font-medium leading-relaxed">
+            <div className="px-8 py-7 space-y-6">
+              <div className="bg-[var(--color-primary-light)] border-l-4 border-[var(--color-primary)] p-3.5 rounded-r-lg">
+                <p className="text-xs text-[var(--color-text-primary)] font-medium leading-relaxed">
                   <strong>Etapa 5 - Cláusulas de Inscrição e Taxas.</strong> Mapeie os valores de taxas, os limites temporais de pagamento, os canais de contato e as isenções regulamentares socioeconômicas.
                 </p>
               </div>
@@ -2161,9 +2252,9 @@ export default function EditaisModule({
             const activeAccordionId = expandedCargoId || (editalDraft.cargos[0]?.id || null);
 
             return (
-              <div className="space-y-6" id="wizard-step-6-container">
-                <div className="bg-blue-50 border-l-4 border-blue-600 p-3.5 rounded-r-lg">
-                  <p className="text-xs text-blue-805 font-medium leading-relaxed">
+              <div className="px-8 py-7 space-y-6" id="wizard-step-6-container">
+                <div className="bg-[var(--color-primary-light)] border-l-4 border-[var(--color-primary)] p-3.5 rounded-r-lg">
+                  <p className="text-xs text-[var(--color-text-primary)] font-medium leading-relaxed">
                     <strong>Etapa 6 - Critérios de Seleção e Avaliação por Processo Seletivo.</strong> Preencha os detalhes das provas, conteúdo programático, tabelas dinâmicas de títulos e referências para cada cargo cadastrado.
                   </p>
                 </div>
@@ -2535,11 +2626,11 @@ export default function EditaisModule({
         })()}
 
         {wizardStep === 7 && (
-            <div className="space-y-6">
+            <div className="px-8 py-7 space-y-6">
               {/* Review Header Banner */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-[#2563eb] p-4 rounded-r-lg">
-                <h3 className="font-bold text-blue-900 text-sm">Etapa 7 - Revisão e Geração Final</h3>
-                <p className="text-xs text-blue-800 mt-1 leading-relaxed">
+              <div className="bg-[var(--color-primary-light)] border-l-4 border-[var(--color-primary)] p-4 rounded-r-lg">
+                <h3 className="font-bold text-[var(--color-primary)] text-sm">Etapa 7 - Revisão e Geração Final</h3>
+                <p className="text-xs text-[var(--color-text-primary)] mt-1 leading-relaxed">
                   Revise minuciosamente todas as seções informativas do Edital oficial. Você poderá voltar instantaneamente para qualquer etapa correspondente clicando em "Editar" para correções precisas.
                 </p>
               </div>
@@ -2741,8 +2832,16 @@ export default function EditaisModule({
                             <tbody className="divide-y divide-gray-150 text-gray-700">
                               {editalDraft.cronogramaEventos.map((ev) => (
                                 <tr key={ev.id} className="hover:bg-gray-55/30">
-                                  <td className="py-2 px-4 font-mono font-bold text-blue-600">
+                                  <td className="py-2 px-4 font-mono font-bold text-blue-600 whitespace-nowrap">
                                     {ev.data === '*' || !ev.data ? '*' : new Date(ev.data + 'T12:00:00').toLocaleDateString('pt-BR')}
+                                    {ev.dataFim !== undefined && (
+                                      <span className="text-gray-400 font-normal mx-1">–</span>
+                                    )}
+                                    {ev.dataFim !== undefined && (
+                                      ev.dataFim === '*' || !ev.dataFim
+                                        ? <span>*</span>
+                                        : <span>{new Date(ev.dataFim + 'T12:00:00').toLocaleDateString('pt-BR')}</span>
+                                    )}
                                   </td>
                                   <td className="py-2 px-4 font-medium">{ev.evento || 'Evento sem descrição'}</td>
                                 </tr>
@@ -2919,25 +3018,29 @@ export default function EditaisModule({
             </div>
           )}
 
+            </div>{/* close scrollable content area */}
+          </div>{/* close flex body (sidebar + content) */}
+
           {/* Footer controls for wizard */}
-          <div className="pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center bg-white gap-4" id="wizard-footer">
+          <div className="px-6 py-4 border-t border-[var(--color-border)] flex flex-col sm:flex-row justify-between items-center bg-[var(--color-bg)] gap-4 shrink-0" id="wizard-footer">
             {/* Left side: Previous step button */}
             <button
               id="btn-wizard-anterior"
               type="button"
               onClick={handlePrevStep}
               disabled={wizardStep === 1}
-              className={`px-4 py-2.5 rounded-lg font-bold text-xs border transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-lg font-bold text-xs border transition-all cursor-pointer inline-flex items-center gap-1.5 ${
                 wizardStep === 1
-                  ? 'text-gray-300 border-gray-200 bg-gray-50 cursor-not-allowed'
-                  : 'text-gray-700 border-gray-350 bg-gray-100 hover:bg-gray-200'
+                  ? 'text-[var(--color-text-muted)] border-[var(--color-border-light)] bg-[var(--color-neutral-bg)] cursor-not-allowed'
+                  : 'text-[var(--color-text-secondary)] border-[var(--color-border)] bg-white hover:bg-[var(--color-primary-light)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'
               }`}
             >
+              <i className="ti ti-chevron-left text-sm"></i>
               Anterior
             </button>
 
             {/* Middle Display: Step display */}
-            <span className="text-[10px] sm:text-xs font-bold text-gray-400">
+            <span className="text-[11px] font-bold text-[var(--color-text-muted)] tracking-wide">
               Etapa {wizardStep} de 7
             </span>
 
@@ -2947,9 +3050,9 @@ export default function EditaisModule({
                 id="btn-wizard-proxima"
                 type="button"
                 onClick={handleNextStep}
-                className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white px-5 py-2.5 rounded-lg font-bold text-xs inline-flex items-center gap-1.5 cursor-pointer shadow-xs transition-all"
+                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-5 py-2.5 rounded-lg font-bold text-xs inline-flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
               >
-                Próxima step
+                Próxima Etapa
                 <i className="ti ti-chevron-right font-extrabold text-sm"></i>
               </button>
             ) : (
@@ -2971,7 +3074,7 @@ export default function EditaisModule({
                   id="btn-generate-doc"
                   type="button"
                   onClick={handleGenerateDocument}
-                  className="bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-700 px-4 py-2.5 rounded-lg font-bold text-xs inline-flex items-center gap-1.5 cursor-pointer transition-all shadow-xs"
+                  className="bg-[var(--color-primary-light)] hover:bg-[var(--color-primary-light)] border border-[var(--color-primary)] text-[var(--color-primary)] px-4 py-2.5 rounded-lg font-bold text-xs inline-flex items-center gap-1.5 cursor-pointer transition-all shadow-xs hover:opacity-80"
                   title="Visualizar documento gerado"
                 >
                   <i className="ti ti-file-text text-sm"></i>
@@ -3046,13 +3149,27 @@ export default function EditaisModule({
               </div>
             </div>
 
-            <button
-              onClick={() => window.print()}
-              className="w-full sm:w-auto bg-[#2563eb] hover:bg-[#1d4ed8] text-white px-4 py-2 rounded-lg text-xs font-bold inline-flex items-center justify-center gap-1.5 cursor-pointer transition-all"
-            >
-              <i className="ti ti-printer text-sm"></i>
-              Imprimir Documento
-            </button>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => window.print()}
+                className="flex-1 sm:flex-none bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-xs font-bold inline-flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+              >
+                <i className="ti ti-printer text-sm"></i>
+                Imprimir
+              </button>
+              <button
+                onClick={() => {
+                  const prevTitle = document.title;
+                  document.title = `Edital_HCPA_${(selectedEdital.numero || '').replace(/\//g, '-')}`;
+                  window.print();
+                  setTimeout(() => { document.title = prevTitle; }, 1000);
+                }}
+                className="flex-1 sm:flex-none bg-[#2563eb] hover:bg-[#1d4ed8] text-white px-4 py-2 rounded-lg text-xs font-bold inline-flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+              >
+                <i className="ti ti-file-type-pdf text-sm"></i>
+                Gerar PDF
+              </button>
+            </div>
           </div>
 
           {/* Dynamic Style injection for Reading Accessibility font sizes */}
@@ -3135,8 +3252,8 @@ export default function EditaisModule({
                 </p>
 
                 {/* HCPA TABLE PREVIEW */}
-                <div className="overflow-x-auto border border-black my-4 scrollbar-thin">
-                  <table className="min-w-[650px] md:w-full text-left text-[11px] border-collapse text-black bg-white">
+                <div className="overflow-x-auto print:overflow-visible border border-black my-4">
+                  <table className="w-full text-left text-[11px] border-collapse text-black bg-white">
                     <thead>
                       <tr className="bg-gray-100 border-b border-black font-sans font-bold">
                         <th className="py-2 px-2 border-r border-black text-center text-[10px]">PS</th>
@@ -3197,8 +3314,8 @@ export default function EditaisModule({
                   3.1 O cronograma de eventos básicos, prazos de homologação e interposição de recursos administrativos obedecerá aos termos descritos no quadro que segue:
                 </p>
 
-                <div className="overflow-x-auto border border-black my-3 scrollbar-thin">
-                  <table className="min-w-[600px] md:w-full text-left text-[11px] border-collapse bg-white text-black font-sans">
+                <div className="overflow-x-auto print:overflow-visible border border-black my-3">
+                  <table className="w-full text-left text-[11px] border-collapse bg-white text-black font-sans">
                     <thead>
                       <tr className="bg-gray-100 border-b border-black font-bold">
                         <th className="py-2 px-3 border-r border-black text-center w-12">ITEM</th>
@@ -3312,8 +3429,8 @@ export default function EditaisModule({
                         <div className="space-y-1.5 pl-4">
                           <strong className="text-[11px] block">a) Do Esquema de Provas e Critérios:</strong>
                           {provas.length > 0 ? (
-                            <div className="overflow-x-auto border border-black my-2 scrollbar-thin">
-                              <table className="min-w-[650px] md:w-full text-left text-[10px] border-collapse bg-white text-black font-sans">
+                            <div className="overflow-x-auto print:overflow-visible border border-black my-2">
+                              <table className="w-full text-left text-[10px] border-collapse bg-white text-black font-sans">
                                 <thead>
                                   <tr className="bg-gray-105 border-b border-black font-bold">
                                     <th className="py-2 px-2 border-r border-black w-24">PROVA</th>
@@ -3379,8 +3496,8 @@ export default function EditaisModule({
                         {tItems.length > 0 && (
                           <div className="space-y-1.5 pl-4">
                             <strong className="text-[11px] block">c) Da Tabela de Titulação Acadêmica:</strong>
-                             <div className="overflow-x-auto border border-black my-2 scrollbar-thin">
-                              <table className="min-w-[500px] md:w-full text-left text-[10px] border-collapse bg-white text-black font-sans font-medium">
+                             <div className="overflow-x-auto print:overflow-visible border border-black my-2">
+                              <table className="w-full text-left text-[10px] border-collapse bg-white text-black font-sans font-medium">
                                 <thead>
                                   <tr className="bg-gray-100 border-b border-black font-bold">
                                     <th className="py-1 px-2 border-r border-black w-14 text-center">ITEM</th>

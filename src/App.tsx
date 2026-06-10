@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -43,7 +44,26 @@ import ConvocacoesModule from './components/ConvocacoesModule';
 import AuditoriaModule from './components/AuditoriaModule';
 import AdministracaoModule from './components/AdministracaoModule';
 
+const MODULE_URL_MAP: Record<ActiveModule, string> = {
+  dashboard: '/Dashboard',
+  editais: '/Editais',
+  candidatos: '/Candidatos',
+  avaliacoes: '/Avaliacoes',
+  convocacoes: '/Convocacoes',
+  auditoria: '/Auditoria',
+  administracao: '/Administracao',
+};
+
+const getModuleFromPath = (pathname: string): ActiveModule => {
+  const path = pathname.slice(1).toLowerCase();
+  const validModules: ActiveModule[] = ['dashboard', 'editais', 'candidatos', 'avaliacoes', 'convocacoes', 'auditoria', 'administracao'];
+  return validModules.includes(path as ActiveModule) ? (path as ActiveModule) : 'dashboard';
+};
+
 export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // Global States
   const [editais, setEditais] = useState<Edital[]>(INITIAL_EDITAIS);
   const [candidatos, setCandidatos] = useState<Candidato[]>(INITIAL_CANDIDATOS);
@@ -60,7 +80,7 @@ export default function App() {
   });
 
   // Shell Layout navigation states
-  const [activeModule, setActiveModule] = useState<ActiveModule>('dashboard');
+  const activeModule = getModuleFromPath(location.pathname);
   const [isModuleLoading, setIsModuleLoading] = useState<boolean>(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
@@ -157,12 +177,19 @@ export default function App() {
   // Switch Module with transition
   const handleModuleChange = (module: ActiveModule) => {
     setIsModuleLoading(true);
-    setIsMobileSidebarOpen(false); // Close mobile side-drawer
+    setIsMobileSidebarOpen(false);
     setTimeout(() => {
-      setActiveModule(module);
+      navigate(MODULE_URL_MAP[module]);
       setIsModuleLoading(false);
     }, 600);
   };
+
+  // Redirect bare "/" to "/Dashboard" on first load
+  useEffect(() => {
+    if (location.pathname === '/') {
+      navigate('/Dashboard', { replace: true });
+    }
+  }, []);
 
   // --- ACTIONS: EDITAIS ---
   const handleCreateEdital = (newEditalData: Omit<Edital, 'id' | 'inscritos'>) => {

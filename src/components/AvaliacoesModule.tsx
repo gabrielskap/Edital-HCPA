@@ -10,14 +10,13 @@ interface AvaliacoesModuleProps {
 export default function AvaliacoesModule({ candidatos, editais, onSaveScores }: AvaliacoesModuleProps) {
   const [selectedEdital, setSelectedEdital] = React.useState(editais[0]?.numero || 'Todos');
   const [activeCandidato, setActiveCandidato] = React.useState<Candidato | null>(null);
-  
-  // Note inputs state
-  const [notaEscrita, setNotaEscrita] = React.useState<number>(0);
-  const [notaTitulos, setNotaTitulos] = React.useState<number>(0);
-  const [pesoEscrita, setPesoEscrita] = React.useState<number>(6);
-  const [pesoTitulos, setPesoTitulos] = React.useState<number>(4);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  // Sync state when active candidate changes
+  const [notaEscrita, setNotaEscrita] = React.useState(0);
+  const [notaTitulos, setNotaTitulos] = React.useState(0);
+  const [pesoEscrita, setPesoEscrita] = React.useState(6);
+  const [pesoTitulos, setPesoTitulos] = React.useState(4);
+
   React.useEffect(() => {
     if (activeCandidato) {
       setNotaEscrita(activeCandidato.notaEscrita);
@@ -27,304 +26,332 @@ export default function AvaliacoesModule({ candidatos, editais, onSaveScores }: 
     }
   }, [activeCandidato]);
 
-  // List of candidates matching the chosen edital
-  const filteredCandidatos = candidatos.filter(c => {
-    return selectedEdital === 'Todos' || c.edital === selectedEdital;
-  });
+  React.useEffect(() => {
+    document.body.style.overflow = isModalOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isModalOpen]);
 
-  const calculateMedia = (esc: number, tit: number, pEsc: number, pTit: number) => {
-    const totalP = pEsc + pTit;
-    if (totalP === 0) return '0.00';
-    return ((esc * pEsc + tit * pTit) / totalP).toFixed(2);
+  const filteredCandidatos = candidatos.filter(c =>
+    selectedEdital === 'Todos' || c.edital === selectedEdital
+  );
+
+  const calcMedia = (esc: number, tit: number, pEsc: number, pTit: number) => {
+    const total = pEsc + pTit;
+    return total === 0 ? 0 : (esc * pEsc + tit * pTit) / total;
   };
 
-  const handleApply = (e: React.FormEvent) => {
+  const mediaBadgeClass = (val: number) =>
+    val >= 7
+      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
+      : val >= 5
+      ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300'
+      : val > 0
+      ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300'
+      : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400';
+
+  const scoreColor = (val: number) =>
+    val >= 7 ? 'text-emerald-600' : val >= 5 ? 'text-amber-600' : 'text-rose-500';
+
+  const openModal = (c: Candidato) => {
+    setActiveCandidato(c);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setActiveCandidato(null);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeCandidato) return;
-    
-    // Save to App State
     onSaveScores(activeCandidato.id, {
       notaEscrita: Number(notaEscrita),
       notaTitulos: Number(notaTitulos),
       peso_escrita: Number(pesoEscrita),
-      peso_titulos: Number(pesoTitulos)
+      peso_titulos: Number(pesoTitulos),
     });
-    
-    // Update local preview state
-    setActiveCandidato({
-      ...activeCandidato,
-      notaEscrita: Number(notaEscrita),
-      notaTitulos: Number(notaTitulos),
-      peso_escrita: Number(pesoEscrita),
-      peso_titulos: Number(pesoTitulos)
-    });
-    
-    // Auto scroll to top of section as requested
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    closeModal();
   };
 
+  const liveMedia = calcMedia(notaEscrita, notaTitulos, pesoEscrita, pesoTitulos);
+
   return (
-    <div className="space-y-6 animate-fade-in" id="avaliacoes-module">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between py-2 border-b border-slate-200 dark:border-slate-700/50">
+    <div className="space-y-5 animate-fade-in" id="avaliacoes-module">
+
+      {/* ── Cabeçalho ── */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 pb-4 border-b border-slate-200 dark:border-slate-700/50">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800 dark:text-slate-100">Avaliações e Notas</h1>
-          <p className="text-sm text-slate-550 dark:text-slate-400">Inserção de notas da prova escrita, contagem de pontos de títulos e cálculo de média ponderada.</p>
+          <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">Avaliações e Notas</h1>
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+            Lançamento de notas e cálculo de média ponderada por candidato.
+          </p>
         </div>
-        <div className="mt-4 md:mt-0">
-          <label htmlFor="eval-edital-select" className="sr-only">Selecione o Edital</label>
-          <select
-            id="eval-edital-select"
-            className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg text-slate-700 dark:text-slate-200 px-3 py-2 text-sm font-bold shadow-xs focus:ring-2 focus:ring-blue-500"
-            value={selectedEdital}
-            onChange={(e) => {
-              setSelectedEdital(e.target.value);
-              setActiveCandidato(null); // Clear selected candidate
-            }}
-          >
-            <option value="Todos">Todos os Editais</option>
-            {editais.map(ed => (
-              <option key={ed.id} value={ed.numero}>Edital {ed.numero} - {ed.instituicao}</option>
-            ))}
-          </select>
-        </div>
+        <select
+          id="eval-edital-select"
+          aria-label="Selecione o Edital"
+          className="w-full sm:w-auto border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg text-slate-700 dark:text-slate-200 px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+          value={selectedEdital}
+          onChange={e => setSelectedEdital(e.target.value)}
+        >
+          <option value="Todos">Todos os Editais</option>
+          {editais.map(ed => (
+            <option key={ed.id} value={ed.numero}>Edital {ed.numero} – {ed.instituicao}</option>
+          ))}
+        </select>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Tabela de Candidatos Filtrada */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-150 dark:border-slate-700/50 lg:col-span-7 overflow-hidden flex flex-col justify-between">
-          <div className="p-4 border-b border-slate-100 dark:border-slate-700/50 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/40">
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-350">Candidatos do Edital</h4>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">{filteredCandidatos.length} inscritos</span>
-          </div>
-          
-          <div className="overflow-x-auto w-full flex-1">
-            <table className="w-full text-left text-xs" id="avaliacoes-table">
-              <thead className="bg-slate-50 dark:bg-slate-900 text-slate-650 dark:text-slate-400 font-bold uppercase py-2">
-                <tr className="border-b border-slate-100 dark:border-slate-700/50">
-                  <th scope="col" className="p-3">Candidato</th>
-                  <th scope="col" className="p-3">Prov. Escrita</th>
-                  <th scope="col" className="p-3">Títulos</th>
-                  <th scope="col" className="p-3">Média</th>
-                  <th scope="col" className="p-3 text-right">Ação</th>
+      {/* ── Tabela de candidatos ── */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xs border border-slate-150 dark:border-slate-700/50 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-150 dark:border-slate-700/60 text-slate-450 dark:text-slate-400 text-[10px] font-black uppercase tracking-wider">
+                <th scope="col" className="p-4">Candidato</th>
+                <th scope="col" className="p-4 hidden md:table-cell">Cargo</th>
+                <th scope="col" className="p-4 text-center">Prov. Escrita</th>
+                <th scope="col" className="p-4 text-center hidden sm:table-cell">Títulos</th>
+                <th scope="col" className="p-4 text-center">Média</th>
+                <th scope="col" className="p-4 text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 text-xs text-slate-700 dark:text-slate-300">
+              {filteredCandidatos.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-slate-400 dark:text-slate-500 font-bold italic">
+                    Nenhum candidato encontrado para o edital selecionado.
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
-                {filteredCandidatos.map(c => {
-                  const media = calculateMedia(c.notaEscrita, c.notaTitulos, c.peso_escrita, c.peso_titulos);
-                  const isCurrent = activeCandidato?.id === c.id;
-                  
+              ) : (
+                filteredCandidatos.map(c => {
+                  const media = calcMedia(c.notaEscrita, c.notaTitulos, c.peso_escrita, c.peso_titulos);
                   return (
-                    <tr 
+                    <tr
                       key={c.id}
-                      className={`hover:bg-slate-50/50 dark:hover:bg-slate-700/10 cursor-pointer ${isCurrent ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''}`}
-                      onClick={() => setActiveCandidato(c)}
+                      className="hover:bg-slate-50/70 dark:hover:bg-slate-900/10 transition-colors cursor-pointer"
+                      onClick={() => openModal(c)}
                     >
-                      <td className="p-3 font-semibold text-slate-800 dark:text-slate-205">
-                        <p>{c.nome}</p>
-                        <p className="text-[10px] text-slate-450 dark:text-slate-450 font-normal">Nº {c.inscricao} • {c.cargo}</p>
+                      {/* Nome */}
+                      <td className="p-4 font-bold text-slate-850 dark:text-slate-100">
+                        {c.nome}
+                        <p className="text-[10px] font-normal text-slate-400 dark:text-slate-500 mt-0.5 font-mono">
+                          Nº {c.inscricao}
+                        </p>
                       </td>
-                      <td className="p-3 font-mono font-bold text-slate-700 dark:text-slate-300">
-                        {c.notaEscrita.toFixed(1)} <span className="text-[10px] font-normal text-slate-400">(P{c.peso_escrita})</span>
+
+                      {/* Cargo */}
+                      <td className="p-4 hidden md:table-cell">
+                        <span className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded-md font-semibold text-[10px] uppercase">
+                          {c.cargo}
+                        </span>
                       </td>
-                      <td className="p-3 font-mono font-bold text-slate-700 dark:text-slate-300">
-                        {c.notaTitulos.toFixed(1)} <span className="text-[10px] font-normal text-slate-400">(P{c.peso_titulos})</span>
+
+                      {/* Prova Escrita */}
+                      <td className="p-4 text-center font-mono font-semibold text-slate-650 dark:text-slate-300">
+                        {c.notaEscrita.toFixed(1)}
+                        <span className="text-[10px] font-normal text-slate-400 ml-0.5">(P{c.peso_escrita})</span>
                       </td>
-                      <td className="p-3 font-mono font-bold text-blue-600 dark:text-blue-400 text-sm">
-                        {media}
+
+                      {/* Títulos */}
+                      <td className="p-4 text-center font-mono font-semibold text-slate-650 dark:text-slate-300 hidden sm:table-cell">
+                        {c.notaTitulos.toFixed(1)}
+                        <span className="text-[10px] font-normal text-slate-400 ml-0.5">(P{c.peso_titulos})</span>
                       </td>
-                      <td className="p-3 text-right">
+
+                      {/* Média badge */}
+                      <td className="p-4 text-center">
+                        <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] font-mono ${mediaBadgeClass(media)}`}>
+                          {media.toFixed(2)}
+                        </span>
+                      </td>
+
+                      {/* Ação */}
+                      <td className="p-4 text-center">
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveCandidato(c);
-                          }}
-                          className={`px-2 py-1 text-[11px] font-bold rounded ${
-                            isCurrent 
-                            ? 'bg-blue-600 text-white' 
-                            : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
-                          } cursor-pointer`}
-                          aria-label={`Editar notas de ${c.nome}`}
+                          type="button"
+                          onClick={e => { e.stopPropagation(); openModal(c); }}
+                          className="text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-[var(--color-primary-mid)] p-1 rounded-sm cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                          title={`Lançar notas de ${c.nome}`}
+                          aria-label={`Lançar notas de ${c.nome}`}
                         >
-                          Lançar
+                          <i className="ti ti-edit text-base"></i>
                         </button>
                       </td>
                     </tr>
                   );
-                })}
-              </tbody>
-            </table>
-          </div>
-          
-          <div className="p-3.5 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700/50 text-[11px] text-slate-500 dark:text-slate-440">
-            Selecione uma linha ou clique em "Lançar" para editar as notas de forma integrada.
-          </div>
+                })
+              )}
+            </tbody>
+          </table>
         </div>
 
-        {/* Formulário de Editor de Notas */}
-        <div className="lg:col-span-5">
-          {activeCandidato === null ? (
-            <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-dashed border-slate-300 dark:border-slate-700/60 p-8 text-center flex flex-col items-center justify-center h-full min-h-[300px]">
-              <i className="ti ti-clipboard-text text-4xl text-slate-400 dark:text-slate-500 mb-3 animate-pulse"></i>
-              <p className="font-bold text-slate-655 dark:text-slate-350 text-sm">Nenhum candidato selecionado</p>
-              <p className="text-xs text-slate-450 dark:text-slate-500 mt-1 max-w-[200px] mx-auto">
-                Clique em um candidato da tabela para abrir o lançador de notas.
-              </p>
+        {/* Rodapé da tabela */}
+        {filteredCandidatos.length > 0 && (
+          <div className="px-4 py-3 border-t border-slate-100 dark:border-slate-700/50 bg-slate-50/60 dark:bg-slate-900/30 text-[11px] text-slate-400 dark:text-slate-500">
+            {filteredCandidatos.length} candidato{filteredCandidatos.length !== 1 ? 's' : ''} &nbsp;·&nbsp;
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+              {filteredCandidatos.filter(c => c.notaEscrita > 0 || c.notaTitulos > 0).length} avaliados
+            </span>
+            &nbsp;·&nbsp;
+            <span className="font-semibold text-slate-600 dark:text-slate-300">
+              {filteredCandidatos.filter(c => calcMedia(c.notaEscrita, c.notaTitulos, c.peso_escrita, c.peso_titulos) >= 6).length} aprovados (≥ 6.0)
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* ── Modal: Lançador de Notas ── */}
+      {isModalOpen && activeCandidato !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="fixed inset-0" onClick={closeModal} />
+
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-205 dark:border-slate-700/60 w-full max-w-md z-55 overflow-hidden animate-scale-up text-xs font-sans">
+
+            {/* Header */}
+            <div className="p-4 border-b border-slate-100 dark:border-slate-700/50 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/10">
+              <h3 className="text-sm font-black text-slate-850 dark:text-slate-100 flex items-center gap-1.5">
+                <i className="ti ti-clipboard-text text-[var(--color-primary)]"></i>
+                Lançador de Notas
+              </h3>
+              <button
+                type="button"
+                onClick={closeModal}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                aria-label="Fechar"
+              >
+                <i className="ti ti-x text-base"></i>
+              </button>
             </div>
-          ) : (
-            <form 
-              onSubmit={handleApply}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-150 dark:border-slate-700/50 p-6 space-y-5 animate-fade-in"
-            >
-              <div className="border-b border-slate-100 dark:border-slate-700/50 pb-3 flex justify-between items-start">
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400">Lançador de Notas</p>
-                  <h3 className="text-base font-bold text-slate-800 dark:text-slate-105 mt-0.5">{activeCandidato.nome}</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Cargo: {activeCandidato.cargo}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveCandidato(null)}
-                  className="text-slate-400 dark:text-slate-500 hover:text-slate-600 rounded-full"
-                  aria-label="Minimizar lançador de notas"
-                >
-                  <i className="ti ti-x text-lg"></i>
-                </button>
-              </div>
 
-              {/* Média Ponderada Visual */}
-              <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 flex items-center justify-between border border-slate-100 dark:border-slate-700/50 shadow-inner">
-                <div>
-                  <p className="text-[11px] font-bold text-slate-500 uppercase dark:text-slate-400">Média Calculada (Parcial)</p>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Peso Escrita: {pesoEscrita} | Peso Títulos: {pesoTitulos}</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-3xl font-black font-mono text-blue-600 dark:text-blue-400">
-                    {calculateMedia(notaEscrita, notaTitulos, pesoEscrita, pesoTitulos)}
-                  </span>
+            <form onSubmit={handleSubmit} className="p-5 space-y-4">
+
+              {/* Candidato (read-only) */}
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wide">
+                  Candidato
+                </label>
+                <div className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-100 font-semibold">
+                  {activeCandidato.nome}
+                  <span className="text-slate-400 font-normal ml-2 text-[11px]">— {activeCandidato.cargo}</span>
                 </div>
               </div>
 
-              {/* Campo Nota Escrita */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <label htmlFor="input-nota-escrita" className="font-bold text-slate-700 dark:text-slate-350">Nota da Prova Escrita (0 a 10)</label>
-                  <span className="font-mono bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-bold px-1.5 py-0.5 rounded text-[10px]">
-                    Val: {Number(notaEscrita).toFixed(1)}
+              {/* Nota Escrita */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="modal-nota-escrita" className="text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wide">
+                    Prova Escrita (0 a 10)
+                  </label>
+                  <span className="font-mono font-bold text-slate-700 dark:text-slate-200 text-xs">
+                    {Number(notaEscrita).toFixed(1)}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <input
-                    id="input-nota-escrita"
-                    type="range"
-                    min="0"
-                    max="10"
-                    step="0.1"
-                    className="flex-1 accent-[#2563eb]"
+                    id="modal-nota-escrita"
+                    type="range" min="0" max="10" step="0.1"
+                    className="flex-1 accent-[var(--color-primary)]"
                     value={notaEscrita}
-                    onChange={(e) => setNotaEscrita(Number(e.target.value))}
+                    onChange={e => setNotaEscrita(Number(e.target.value))}
                   />
                   <input
-                    type="number"
-                    min="0"
-                    max="10"
-                    step="0.1"
-                    className="w-16 px-2 py-1 text-center font-mono font-bold text-xs border border-slate-250 dark:border-slate-700 rounded bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+                    type="number" min="0" max="10" step="0.1"
+                    className="w-16 border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-2 py-1.5 text-center font-mono font-bold text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                     value={notaEscrita}
-                    onChange={(e) => {
-                      const v = Math.min(10, Math.max(0, Number(e.target.value) || 0));
-                      setNotaEscrita(v);
-                    }}
-                    aria-label="Nota Escrita digitação rápida"
+                    onChange={e => setNotaEscrita(Math.min(10, Math.max(0, Number(e.target.value) || 0)))}
+                    aria-label="Valor nota escrita"
                   />
                 </div>
               </div>
 
-              {/* Campo Nota Títulos */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <label htmlFor="input-nota-titulos" className="font-bold text-slate-700 dark:text-slate-350">Nota de Títulos (0 a 10)</label>
-                  <span className="font-mono bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 font-bold px-1.5 py-0.5 rounded text-[10px]">
-                    Val: {Number(notaTitulos).toFixed(1)}
+              {/* Nota Títulos */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="modal-nota-titulos" className="text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wide">
+                    Nota de Títulos (0 a 10)
+                  </label>
+                  <span className="font-mono font-bold text-slate-700 dark:text-slate-200 text-xs">
+                    {Number(notaTitulos).toFixed(1)}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <input
-                    id="input-nota-titulos"
-                    type="range"
-                    min="0"
-                    max="10"
-                    step="0.1"
-                    className="flex-1 accent-[#2563eb]"
+                    id="modal-nota-titulos"
+                    type="range" min="0" max="10" step="0.1"
+                    className="flex-1 accent-[var(--color-primary)]"
                     value={notaTitulos}
-                    onChange={(e) => setNotaTitulos(Number(e.target.value))}
+                    onChange={e => setNotaTitulos(Number(e.target.value))}
                   />
                   <input
-                    type="number"
-                    min="0"
-                    max="10"
-                    step="0.1"
-                    className="w-16 px-2 py-1 text-center font-mono font-bold text-xs border border-slate-250 dark:border-slate-700 rounded bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+                    type="number" min="0" max="10" step="0.1"
+                    className="w-16 border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-2 py-1.5 text-center font-mono font-bold text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                     value={notaTitulos}
-                    onChange={(e) => {
-                      const v = Math.min(10, Math.max(0, Number(e.target.value) || 0));
-                      setNotaTitulos(v);
-                    }}
-                    aria-label="Nota Títulos digitação rápida"
+                    onChange={e => setNotaTitulos(Math.min(10, Math.max(0, Number(e.target.value) || 0)))}
+                    aria-label="Valor nota títulos"
                   />
                 </div>
               </div>
 
-              {/* Grid de Pesos de Avaliação */}
-              <div className="grid grid-cols-2 gap-4 border-t border-slate-100 dark:border-slate-700/50 pt-4">
+              {/* Pesos */}
+              <div className="grid grid-cols-2 gap-3.5">
                 <div className="space-y-1">
-                  <label htmlFor="weight-written" className="text-xs font-bold text-slate-500 dark:text-slate-400">Peso Escrita</label>
+                  <label htmlFor="modal-peso-escrita" className="text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wide">
+                    Peso Escrita
+                  </label>
                   <input
-                    id="weight-written"
-                    type="number"
-                    min="1"
-                    max="10"
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold font-mono py-1.5 px-3 rounded-lg"
+                    id="modal-peso-escrita"
+                    type="number" min="1" max="10"
+                    className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 font-bold font-mono text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                     value={pesoEscrita}
-                    onChange={(e) => setPesoEscrita(Math.max(1, Number(e.target.value) || 1))}
+                    onChange={e => setPesoEscrita(Math.max(1, Number(e.target.value) || 1))}
                   />
                 </div>
                 <div className="space-y-1">
-                  <label htmlFor="weight-titles" className="text-xs font-bold text-slate-500 dark:text-slate-400">Peso Títulos</label>
+                  <label htmlFor="modal-peso-titulos" className="text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wide">
+                    Peso Títulos
+                  </label>
                   <input
-                    id="weight-titles"
-                    type="number"
-                    min="0"
-                    max="10"
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold font-mono py-1.5 px-3 rounded-lg"
+                    id="modal-peso-titulos"
+                    type="number" min="0" max="10"
+                    className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 font-bold font-mono text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                     value={pesoTitulos}
-                    onChange={(e) => setPesoTitulos(Math.max(0, Number(e.target.value) || 0))}
+                    onChange={e => setPesoTitulos(Math.max(0, Number(e.target.value) || 0))}
                   />
                 </div>
               </div>
 
-              {/* Botões do Painel */}
-              <div className="pt-2 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-700/50">
+              {/* Média calculada */}
+              <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-150 dark:border-slate-700/50">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wide">
+                  Média Calculada (Parcial)
+                </span>
+                <span className={`text-lg font-black font-mono ${scoreColor(liveMedia)}`}>
+                  {liveMedia.toFixed(2)}
+                </span>
+              </div>
+
+              {/* Footer */}
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-700/50 flex justify-end gap-3">
                 <button
                   type="button"
-                  onClick={() => setActiveCandidato(null)}
-                  className="px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-650 dark:text-slate-300 text-xs rounded-lg font-bold hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                  onClick={closeModal}
+                  className="px-4 py-2 border border-slate-250 dark:border-slate-700 text-slate-655 dark:text-slate-300 rounded-lg font-bold hover:bg-slate-50 dark:hover:bg-slate-720 cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg font-bold shadow-md cursor-pointer"
-                  aria-label="Registrar Notas da Sessão"
+                  className="px-5 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white rounded-lg font-bold shadow-xs cursor-pointer"
                 >
                   Salvar Nota
                 </button>
               </div>
-            </form>
-          )}
-        </div>
 
-      </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
