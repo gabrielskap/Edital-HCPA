@@ -397,15 +397,15 @@ export default function AuditoriaModule({ logs, onClearLogs, showToast, logActio
           <div className="space-y-4" id="view-section-logs">
             
             {/* SEARCH AND FILTERS BOX */}
-            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-150 dark:border-slate-700/40 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-              
+            <div className="sp-card grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+
               {/* general search */}
-              <div className="relative md:col-span-2 w-full">
-                <i className="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+              <div className="sp-search-container md:col-span-2">
+                <i className="ti ti-search sp-search-icon"></i>
                 <input
                   id="log-table-search"
                   type="text"
-                  className="w-full pl-10 pr-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-xs focus:ring-2 focus:ring-blue-500"
+                  className="sp-search-input"
                   placeholder="Pesquisar por usuário, ação, registro ou IP..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -414,10 +414,10 @@ export default function AuditoriaModule({ logs, onClearLogs, showToast, logActio
 
               {/* module selector */}
               <div className="flex items-center gap-2 w-full">
-                <label htmlFor="log-module-filter" className="text-[11px] font-bold text-slate-450 dark:text-slate-400 whitespace-nowrap uppercase">Módulo:</label>
+                <label htmlFor="log-module-filter" className="sp-form-label mb-0 whitespace-nowrap">Módulo:</label>
                 <select
                   id="log-module-filter"
-                  className="border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg text-slate-700 dark:text-slate-200 px-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 w-full"
+                  className="sp-input"
                   value={selectedModule}
                   onChange={(e) => setSelectedModule(e.target.value)}
                 >
@@ -431,25 +431,25 @@ export default function AuditoriaModule({ logs, onClearLogs, showToast, logActio
                 </select>
               </div>
 
-              {/* Period filters Wrapper */}
-              <div className="flex items-center gap-1.5 w-full">
-                <div className="relative w-1/2">
-                  <span className="absolute left-2.5 top-0 text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase">Início</span>
+              {/* Period filters */}
+              <div className="flex items-end gap-2 w-full">
+                <div className="flex flex-col gap-1 flex-1">
+                  <label htmlFor="log-start-date" className="sp-form-label mb-0">Início</label>
                   <input
                     id="log-start-date"
                     type="date"
-                    className="w-full pl-2.5 pr-2 pt-4 pb-1.5 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-[10px] text-slate-700 dark:text-slate-200 font-mono focus:ring-2 focus:ring-blue-500"
+                    className="sp-input"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     aria-label="Período início filtro"
                   />
                 </div>
-                <div className="relative w-1/2">
-                  <span className="absolute left-2.5 top-0 text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase">Fim</span>
+                <div className="flex flex-col gap-1 flex-1">
+                  <label htmlFor="log-end-date" className="sp-form-label mb-0">Fim</label>
                   <input
                     id="log-end-date"
                     type="date"
-                    className="w-full pl-2.5 pr-2 pt-4 pb-1.5 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-[10px] text-slate-700 dark:text-slate-200 font-mono focus:ring-2 focus:ring-blue-500"
+                    className="sp-input"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                     aria-label="Período fim filtro"

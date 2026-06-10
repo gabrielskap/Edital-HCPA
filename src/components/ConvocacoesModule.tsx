@@ -22,7 +22,6 @@ import {
   BookmarkCheck,
   Award,
   Search,
-  Filter,
   Users2,
   CheckCircle2,
   XCircle,
@@ -525,13 +524,11 @@ Banca Executora (${realizadora})`;
               
               {localConvocacoes.filter(c => c.status === 'Publicada').length > 0 && (
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
-                  <div className="relative w-full sm:w-48">
-                    <Filter className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--color-text-secondary)]" />
+                  <div className="w-full sm:w-44">
                     <select
                       value={selectedEditalFilter}
                       onChange={(e) => setSelectedEditalFilter(e.target.value)}
-                      className="w-full pl-8 pr-8 py-2 bg-white border border-[var(--color-border)] rounded-lg text-xs font-semibold text-[var(--color-text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] shadow-xs cursor-pointer appearance-none"
-                      style={{ backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234a6352' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'></path></svg>")`, backgroundPosition: 'right 10px center', backgroundSize: '12px', backgroundRepeat: 'no-repeat' }}
+                      className="sp-input font-semibold cursor-pointer"
                       title="Filtrar por Edital"
                     >
                       <option value="">Filtro: Todos Editais</option>
@@ -540,19 +537,19 @@ Banca Executora (${realizadora})`;
                       ))}
                     </select>
                   </div>
-                  <div className="relative w-full sm:w-60">
-                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--color-text-muted)]" />
+                  <div className="sp-search-container w-full sm:w-64">
+                    <i className="ti ti-search sp-search-icon"></i>
                     <input
                       type="text"
                       placeholder="Filtrar por tipo, cargo..."
                       value={convocacoesSearchTerm}
                       onChange={(e) => setConvocacoesSearchTerm(e.target.value)}
-                      className="w-full pl-8 pr-8 py-2 bg-white border border-[var(--color-border)] rounded-lg text-xs placeholder-[var(--color-text-muted)] text-[var(--color-text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] shadow-xs"
+                      className="sp-search-input"
                     />
                     {convocacoesSearchTerm && (
-                      <button 
+                      <button
                         onClick={() => setConvocacoesSearchTerm('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] font-bold text-[10px]"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] font-bold text-xs"
                       >
                         ✕
                       </button>
@@ -1188,13 +1185,11 @@ Banca Executora (${realizadora})`;
               
               {localConvocacoes.length > 0 && (
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
-                  <div className="relative w-full sm:w-48">
-                    <Filter className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--color-text-secondary)]" />
+                  <div className="w-full sm:w-44">
                     <select
                       value={selectedEditalFilter}
                       onChange={(e) => setSelectedEditalFilter(e.target.value)}
-                      className="w-full pl-8 pr-8 py-2 bg-white border border-[var(--color-border)] rounded-lg text-xs font-semibold text-[var(--color-text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] shadow-xs cursor-pointer appearance-none"
-                      style={{ backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234a6352' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'></path></svg>")`, backgroundPosition: 'right 10px center', backgroundSize: '12px', backgroundRepeat: 'no-repeat' }}
+                      className="sp-input font-semibold cursor-pointer"
                       title="Filtrar por Edital"
                     >
                       <option value="">Filtro: Todos Editais</option>
@@ -1203,19 +1198,19 @@ Banca Executora (${realizadora})`;
                       ))}
                     </select>
                   </div>
-                  <div className="relative w-full sm:w-64">
-                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--color-text-muted)]" />
+                  <div className="sp-search-container w-full sm:w-64">
+                    <i className="ti ti-search sp-search-icon"></i>
                     <input
                       type="text"
                       placeholder="Buscar no histórico..."
                       value={historicoSearchTerm}
                       onChange={(e) => setHistoricoSearchTerm(e.target.value)}
-                      className="w-full pl-8 pr-8 py-2 bg-white border border-[var(--color-border)] rounded-lg text-xs placeholder-[var(--color-text-muted)] text-[var(--color-text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] shadow-xs"
+                      className="sp-search-input"
                     />
                     {historicoSearchTerm && (
-                      <button 
+                      <button
                         onClick={() => setHistoricoSearchTerm('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] font-bold text-[10px]"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] font-bold text-xs"
                       >
                         ✕
                       </button>

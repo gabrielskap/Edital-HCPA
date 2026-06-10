@@ -541,7 +541,6 @@ form textarea[readonly] {
   padding: 9px 12px 9px 36px !important;
   font-size: 13px !important;
   color: var(--color-text-primary) !important;
-  min-width: 280px !important;
   display: block !important;
   width: 100% !important;
   transition: var(--transition) !important;
@@ -563,6 +562,9 @@ form textarea[readonly] {
   top: 50% !important;
   transform: translateY(-50%) !important;
   color: var(--color-text-muted) !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  pointer-events: none !important;
 }
 
 @theme {
@@ -1491,6 +1493,12 @@ form textarea:focus {
   box-shadow: 0 0 0 3px rgba(26, 107, 58, 0.16) !important; /* Sombra verde sutil ao focar */
 }
 
+/* Restaura padding-left dos campos de busca — especificidade (0,2,1) igual ao reset geral acima,
+   mas posição posterior vence no cascade. */
+input.sp-search-input:not([type="checkbox"]) {
+  padding-left: 38px !important;
+}
+
 /* Estilo para LABELS */
 label,
 .sp-form-label,
@@ -1808,22 +1816,6 @@ div.fixed.inset-0.z-50 .border-t button {
 
 /* 4. REFINAMENTO DE ÍCONES E INPUTS */
 
-/* Correção da Lupa de Busca: ajuste de padding-left para texto não encavalar no placeholder */
-.sp-search-input,
-input[placeholder*="Busca"],
-input[placeholder*="Pesquisa"],
-input[placeholder*="filtrar"],
-input[placeholder*="Filtrar"] {
-  padding-left: 42px !important; /* espaço seguro para o texto começar após o ícone */
-}
-
-/* Ajuste fino na posição vertical e horizontal do ícone de busca absoluto */
-.sp-search-icon,
-.search-icon,
-input[placeholder*="Busca"] ~ svg,
-input[placeholder*="Busca"] ~ i {
-  left: 14px !important;
-}
 
 /* Centralização de ícones nos cards de métricas do Dashboard e Auditoria (círculo perfeito) */
 .sp-metric-card .sp-metric-icon,
