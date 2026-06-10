@@ -787,33 +787,33 @@ export default function App() {
               {activeModal.type === 'create_edital' && (
                 <form onSubmit={submitNewEdital} className="space-y-4">
                   <div className="grid grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label htmlFor="modal-ed-numero" className="text-xs font-bold text-slate-500">Número do Edital *</label>
-                      <input id="modal-ed-numero" type="text" name="numero" required placeholder="Ex: 05/2026" className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 font-semibold text-slate-800 dark:text-slate-100" />
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-ed-numero">Número do Edital *</label>
+                      <input id="modal-ed-numero" type="text" name="numero" required placeholder="Ex: 05/2026" className="w-full sp-input font-semibold" />
                     </div>
-                    <div className="space-y-1">
-                      <label htmlFor="modal-ed-vagas" className="text-xs font-bold text-slate-500">Vagas Oferecidas *</label>
-                      <input id="modal-ed-vagas" type="number" name="vagas" required placeholder="Ex: 15" className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 font-mono" />
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-ed-vagas">Vagas Oferecidas *</label>
+                      <input id="modal-ed-vagas" type="number" name="vagas" required placeholder="Ex: 15" className="w-full sp-input font-mono" />
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label htmlFor="modal-ed-titulo" className="text-xs font-bold text-slate-500">Descrição / Título do Processo Seletivo *</label>
-                    <input id="modal-ed-titulo" type="text" name="titulo" required placeholder="Ex: Cargos Médicos e Técnicos em Saúde" className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-slate-800 dark:text-slate-100" />
+                  <div className="space-y-1.5">
+                    <label htmlFor="modal-ed-titulo">Descrição / Título do Processo Seletivo *</label>
+                    <input id="modal-ed-titulo" type="text" name="titulo" required placeholder="Ex: Cargos Médicos e Técnicos em Saúde" className="w-full sp-input" />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label htmlFor="modal-ed-instituicao" className="text-xs font-bold text-slate-500">Instituição Contratante *</label>
-                      <select id="modal-ed-instituicao" name="instituicao" required className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-slate-705 dark:text-slate-200">
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-ed-instituicao">Instituição Contratante *</label>
+                      <select id="modal-ed-instituicao" name="instituicao" required className="w-full sp-input">
                         <option value="HCPA">HCPA (Hospital de Clínicas)</option>
                         <option value="UFRGS">UFRGS</option>
                         <option value="UFMG">UFMG</option>
                       </select>
                     </div>
-                    <div className="space-y-1">
-                      <label htmlFor="modal-ed-realizadora" className="text-xs font-bold text-slate-500">Banca Realizadora *</label>
-                      <select id="modal-ed-realizadora" name="realizadora" required className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-slate-705 dark:text-slate-200">
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-ed-realizadora">Banca Realizadora *</label>
+                      <select id="modal-ed-realizadora" name="realizadora" required className="w-full sp-input">
                         <option value="FAURGS">FAURGS</option>
                         <option value="FUMARC">FUMARC</option>
                       </select>
@@ -821,28 +821,28 @@ export default function App() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label htmlFor="modal-ed-abertura" className="text-xs font-bold text-slate-500">Abertura das Inscrições *</label>
-                      <input id="modal-ed-abertura" type="date" name="abertura" required className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 font-mono text-slate-805 dark:text-slate-205" />
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-ed-abertura">Abertura das Inscrições *</label>
+                      <input id="modal-ed-abertura" type="date" name="abertura" required className="w-full sp-input font-mono" />
                     </div>
-                    <div className="space-y-1">
-                      <label htmlFor="modal-ed-encerramento" className="text-xs font-bold text-slate-500">Encerramento Inscrições *</label>
-                      <input id="modal-ed-encerramento" type="date" name="encerramento" required className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 font-mono text-slate-805 dark:text-slate-205" />
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-ed-encerramento">Encerramento Inscrições *</label>
+                      <input id="modal-ed-encerramento" type="date" name="encerramento" required className="w-full sp-input font-mono" />
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label htmlFor="modal-ed-status" className="text-xs font-bold text-slate-500">Status Inicial</label>
-                    <select id="modal-ed-status" name="status" className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2">
+                  <div className="space-y-1.5">
+                    <label htmlFor="modal-ed-status">Status Inicial</label>
+                    <select id="modal-ed-status" name="status" className="w-full sp-input">
                       <option value="Em Andamento">Em Andamento</option>
                       <option value="Recurso">Fase de Recurso</option>
                       <option value="Convocação">Fase de Convocação</option>
                     </select>
                   </div>
 
-                  <div className="pt-4 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-700/50">
-                    <button type="button" onClick={() => setActiveModal(null)} className="px-4 py-2 border border-slate-250 dark:border-slate-700 text-slate-655 dark:text-slate-300 rounded-lg font-bold hover:bg-slate-50">Cancelar</button>
-                    <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md cursor-pointer">Registrar Processo</button>
+                  <div className="pt-4 flex justify-end gap-3 border-t border-[var(--color-border)]">
+                    <button type="button" onClick={() => setActiveModal(null)} className="sp-btn sp-btn-secondary">Cancelar</button>
+                    <button type="submit" className="sp-btn sp-btn-primary">Registrar Processo</button>
                   </div>
                 </form>
               )}
@@ -850,60 +850,60 @@ export default function App() {
               {/* MODAL: MANUALLY CADET CANDIDATO */}
               {activeModal.type === 'create_candidato' && (
                 <form onSubmit={submitNewCandidato} className="space-y-4">
-                  <div className="space-y-1">
-                    <label htmlFor="modal-cand-nome" className="text-xs font-bold text-slate-500">Nome Completo do Candidato *</label>
-                    <input id="modal-cand-nome" type="text" name="nome" required placeholder="Ex: Douglas Souza de Almeida" className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-slate-800 dark:text-slate-100" />
+                  <div className="space-y-1.5">
+                    <label htmlFor="modal-cand-nome">Nome Completo do Candidato *</label>
+                    <input id="modal-cand-nome" type="text" name="nome" required placeholder="Ex: Douglas Souza de Almeida" className="w-full sp-input" />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label htmlFor="modal-cand-cpf" className="text-xs font-bold text-slate-500">CPF do Candidato *</label>
-                      <input id="modal-cand-cpf" type="text" name="cpf" required placeholder="Ex: 567.890.123-44" className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 font-mono text-slate-800 dark:text-slate-100" />
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-cand-cpf">CPF do Candidato *</label>
+                      <input id="modal-cand-cpf" type="text" name="cpf" required placeholder="Ex: 567.890.123-44" className="w-full sp-input font-mono" />
                     </div>
-                    <div className="space-y-1">
-                      <label htmlFor="modal-cand-nasc" className="text-xs font-bold text-slate-500">Data de Nascimento *</label>
-                      <input id="modal-cand-nasc" type="date" name="nascimento" required className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 font-mono text-slate-805 dark:text-slate-205" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label htmlFor="modal-cand-email" className="text-xs font-bold text-slate-500">E-mail *</label>
-                      <input id="modal-cand-email" type="email" name="email" required placeholder="Ex: d.souza@email.com" className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-slate-800" />
-                    </div>
-                    <div className="space-y-1">
-                      <label htmlFor="modal-cand-fone" className="text-xs font-bold text-slate-500">Telefone Contato *</label>
-                      <input id="modal-cand-fone" type="text" name="telefone" required placeholder="Ex: (51) 98765-4321" className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-slate-800" />
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-cand-nasc">Data de Nascimento *</label>
+                      <input id="modal-cand-nasc" type="date" name="nascimento" required className="w-full sp-input font-mono" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label htmlFor="modal-cand-edital" className="text-xs font-bold text-slate-500">Vincular ao Edital *</label>
-                      <select id="modal-cand-edital" name="edital" required className="w-full border border-slate-25a dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-slate-705 dark:text-slate-200">
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-cand-email">E-mail *</label>
+                      <input id="modal-cand-email" type="email" name="email" required placeholder="Ex: d.souza@email.com" className="w-full sp-input" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-cand-fone">Telefone Contato *</label>
+                      <input id="modal-cand-fone" type="text" name="telefone" required placeholder="Ex: (51) 98765-4321" className="w-full sp-input" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3.5">
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-cand-edital">Vincular ao Edital *</label>
+                      <select id="modal-cand-edital" name="edital" required className="w-full sp-input">
                         {editais.map(ed => (
                           <option key={ed.id} value={ed.numero}>Edital {ed.numero}</option>
                         ))}
                       </select>
                     </div>
-                    <div className="space-y-1">
-                      <label htmlFor="modal-cand-cargo" className="text-xs font-bold text-slate-500">Cargo Pretendido *</label>
-                      <input id="modal-cand-cargo" type="text" name="cargo" required placeholder="Ex: Analista de TI I" className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-slate-800 dark:text-slate-100" />
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-cand-cargo">Cargo Pretendido *</label>
+                      <input id="modal-cand-cargo" type="text" name="cargo" required placeholder="Ex: Analista de TI I" className="w-full sp-input" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3.5">
-                    <div className="space-y-1">
-                      <label htmlFor="modal-cand-modalidade" className="text-xs font-bold text-slate-500">Vaga Concorrida *</label>
-                      <select id="modal-cand-modalidade" name="modalidade" required className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-slate-705">
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-cand-modalidade">Vaga Concorrida *</label>
+                      <select id="modal-cand-modalidade" name="modalidade" required className="w-full sp-input">
                         <option value="AC">Ampla Concorrência (AC)</option>
                         <option value="PcD">Pessoa com Deficiência (PcD)</option>
                         <option value="Negros">Cotas para Negros</option>
                       </select>
                     </div>
-                    <div className="space-y-1">
-                      <label htmlFor="modal-cand-racial" className="text-xs font-bold text-slate-500">Autodeclaração Racial</label>
-                      <select id="modal-cand-racial" name="racial" className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2">
+                    <div className="space-y-1.5">
+                      <label htmlFor="modal-cand-racial">Autodeclaração Racial</label>
+                      <select id="modal-cand-racial" name="racial" className="w-full sp-input">
                         <option value="Branca">Branca</option>
                         <option value="Preta">Preta</option>
                         <option value="Parda">Parda</option>
@@ -914,13 +914,13 @@ export default function App() {
                   </div>
 
                   <div className="flex items-center gap-2 py-1">
-                    <input id="modal-cand-def" type="checkbox" name="deficiencia" className="accent-[#2563eb] h-4 w-4" />
-                    <label htmlFor="modal-cand-def" className="text-xs font-bold text-slate-650 dark:text-slate-300">Portador de Deficiência Física declarada (PcD)?</label>
+                    <input id="modal-cand-def" type="checkbox" name="deficiencia" className="h-4 w-4 accent-[var(--color-primary)]" />
+                    <label htmlFor="modal-cand-def" style={{ textTransform: 'none', letterSpacing: 'normal', fontWeight: 600 }}>Portador de Deficiência Física declarada (PcD)?</label>
                   </div>
 
-                  <div className="pt-4 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-700/50">
-                    <button type="button" onClick={() => setActiveModal(null)} className="px-4 py-2 border border-slate-250 dark:border-slate-700 text-slate-655 dark:text-slate-300 rounded-lg font-bold hover:bg-slate-50">Cancelar</button>
-                    <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md cursor-pointer">Registrar Inscrição</button>
+                  <div className="pt-4 flex justify-end gap-3 border-t border-[var(--color-border)]">
+                    <button type="button" onClick={() => setActiveModal(null)} className="sp-btn sp-btn-secondary">Cancelar</button>
+                    <button type="submit" className="sp-btn sp-btn-primary">Registrar Inscrição</button>
                   </div>
                 </form>
               )}
@@ -938,91 +938,89 @@ export default function App() {
                 return (
                   <div className="space-y-4">
                     {/* Visual Card Header */}
-                    <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 border border-slate-100 dark:border-slate-700/50 flex justify-between items-center">
+                    <div className="bg-[var(--color-bg)] rounded-xl p-4 border border-[var(--color-border)] flex justify-between items-center">
                       <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase">Inscrição nº {c.inscricao}</p>
-                        <h4 className="text-base font-bold text-slate-805 dark:text-slate-105 mt-0.5">{c.nome}</h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Cargo: {c.cargo}</p>
+                        <p className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase">Inscrição nº {c.inscricao}</p>
+                        <h4 className="text-base font-bold text-[var(--color-text-primary)] mt-0.5">{c.nome}</h4>
+                        <p className="text-xs text-[var(--color-text-secondary)] font-medium">Cargo: {c.cargo}</p>
                       </div>
-                      <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${
-                        c.status === 'Homologado' 
-                        ? 'bg-emerald-100 text-emerald-800' 
-                        : c.status === 'Pendente' 
-                        ? 'bg-amber-100 text-amber-800' 
-                        : 'bg-rose-105 text-rose-800'
+                      <span className={`sp-badge ${
+                        c.status === 'Homologado' ? 'sp-badge-success'
+                        : c.status === 'Pendente'  ? 'sp-badge-pendente'
+                        : 'sp-badge-encerrado'
                       }`}>
                         {c.status}
                       </span>
                     </div>
 
                     {/* Personal metrics */}
-                    <div className="grid grid-cols-2 gap-3 text-xs border-b border-slate-100 dark:border-slate-700/55 pb-3">
+                    <div className="grid grid-cols-2 gap-3 text-xs border-b border-[var(--color-border)] pb-3">
                       <div>
-                        <p className="font-bold text-slate-400 uppercase text-[9px]">CPF do Candidato</p>
-                        <p className="font-semibold text-slate-700 dark:text-slate-300 font-mono mt-0.5">{c.cpf}</p>
+                        <p className="font-bold text-[var(--color-text-muted)] uppercase text-[9px]">CPF do Candidato</p>
+                        <p className="font-semibold text-[var(--color-text-primary)] font-mono mt-0.5">{c.cpf}</p>
                       </div>
                       <div>
-                        <p className="font-bold text-slate-400 uppercase text-[9px]">Idade Apurada</p>
-                        <p className="font-semibold text-slate-700 dark:text-slate-300 mt-0.5">{calculatedAge} anos <span className="text-[10px] text-slate-400 font-normal">({c.nascimento.split('-').reverse().join('/')})</span></p>
+                        <p className="font-bold text-[var(--color-text-muted)] uppercase text-[9px]">Idade Apurada</p>
+                        <p className="font-semibold text-[var(--color-text-primary)] mt-0.5">{calculatedAge} anos <span className="text-[10px] text-[var(--color-text-muted)] font-normal">({c.nascimento.split('-').reverse().join('/')})</span></p>
                       </div>
                       <div>
-                        <p className="font-bold text-slate-400 uppercase text-[9px]">E-mail de Contato</p>
-                        <p className="font-semibold text-slate-700 dark:text-slate-300 mt-0.5 truncate" title={c.email}>{c.email}</p>
+                        <p className="font-bold text-[var(--color-text-muted)] uppercase text-[9px]">E-mail de Contato</p>
+                        <p className="font-semibold text-[var(--color-text-primary)] mt-0.5 truncate" title={c.email}>{c.email}</p>
                       </div>
                       <div>
-                        <p className="font-bold text-slate-400 uppercase text-[9px]">Telefone</p>
-                        <p className="font-semibold text-slate-700 dark:text-slate-300 mt-0.5">{c.telefone}</p>
+                        <p className="font-bold text-[var(--color-text-muted)] uppercase text-[9px]">Telefone</p>
+                        <p className="font-semibold text-[var(--color-text-primary)] mt-0.5">{c.telefone}</p>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 text-xs border-b border-slate-100 dark:border-slate-700/55 pb-3">
+                    <div className="grid grid-cols-2 gap-3 text-xs border-b border-[var(--color-border)] pb-3">
                       <div>
-                        <p className="font-bold text-slate-400 uppercase text-[9px]">Autodeclaração Racial</p>
-                        <p className="font-semibold text-slate-750 dark:text-slate-305 mt-0.5">{c.racial}</p>
+                        <p className="font-bold text-[var(--color-text-muted)] uppercase text-[9px]">Autodeclaração Racial</p>
+                        <p className="font-semibold text-[var(--color-text-primary)] mt-0.5">{c.racial}</p>
                       </div>
                       <div>
-                        <p className="font-bold text-slate-400 uppercase text-[9px]">Cotas PCD</p>
-                        <p className="font-semibold text-slate-750 dark:text-slate-305 mt-0.5">{c.deficiencia ? 'Declarada PcD (Sim)' : 'Não aplicável (Não)'}</p>
+                        <p className="font-bold text-[var(--color-text-muted)] uppercase text-[9px]">Cotas PCD</p>
+                        <p className="font-semibold text-[var(--color-text-primary)] mt-0.5">{c.deficiencia ? 'Declarada PcD (Sim)' : 'Não aplicável (Não)'}</p>
                       </div>
                     </div>
 
                     {/* Integrated Scores breakdown with formula */}
-                    <div className="p-4 bg-blue-50/20 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-900/20">
-                      <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase">Boletim de Desempenho Ponderado</p>
-                      
+                    <div className="p-4 bg-[var(--color-primary-light)] rounded-xl border border-[var(--color-border)]">
+                      <p className="text-[10px] font-bold text-[var(--color-primary)] uppercase">Boletim de Desempenho Ponderado</p>
+
                       <div className="grid grid-cols-3 gap-2 mt-2 pt-1">
                         <div>
-                          <p className="text-[9px] uppercase font-bold text-slate-400">Nota Escrita</p>
-                          <p className="font-mono font-bold text-slate-800 dark:text-white mt-0.5">{c.notaEscrita.toFixed(1)} <span className="text-[9px] font-normal text-slate-400">({c.peso_escrita}x)</span></p>
+                          <p className="text-[9px] uppercase font-bold text-[var(--color-text-muted)]">Nota Escrita</p>
+                          <p className="font-mono font-bold text-[var(--color-text-primary)] mt-0.5">{c.notaEscrita.toFixed(1)} <span className="text-[9px] font-normal text-[var(--color-text-muted)]">({c.peso_escrita}x)</span></p>
                         </div>
                         <div>
-                          <p className="text-[9px] uppercase font-bold text-slate-400">Nota Títulos</p>
-                          <p className="font-mono font-bold text-slate-800 dark:text-white mt-0.5">{c.notaTitulos.toFixed(1)} <span className="text-[9px] font-normal text-slate-400">({c.peso_titulos}x)</span></p>
+                          <p className="text-[9px] uppercase font-bold text-[var(--color-text-muted)]">Nota Títulos</p>
+                          <p className="font-mono font-bold text-[var(--color-text-primary)] mt-0.5">{c.notaTitulos.toFixed(1)} <span className="text-[9px] font-normal text-[var(--color-text-muted)]">({c.peso_titulos}x)</span></p>
                         </div>
                         <div className="text-right">
-                          <p className="text-[9px] uppercase font-bold text-slate-400">Média Geral</p>
-                          <p className="font-mono font-black text-blue-600 dark:text-blue-400 text-sm mt-0.5">{finalScore}</p>
+                          <p className="text-[9px] uppercase font-bold text-[var(--color-text-muted)]">Média Geral</p>
+                          <p className="font-mono font-black text-[var(--color-primary)] text-sm mt-0.5">{finalScore}</p>
                         </div>
                       </div>
 
-                      <p className="text-[10px] text-slate-400 mt-3 border-t border-blue-100 dark:border-blue-900/20 pt-2 font-light">
-                        Mecanismo de cálculo: <code className="bg-slate-100 dark:bg-slate-820 p-1 rounded font-mono text-[9px]">(Escrita * {c.peso_escrita} + Títulos * {c.peso_titulos}) / {totalPesos}</code>
+                      <p className="text-[10px] text-[var(--color-text-muted)] mt-3 border-t border-[var(--color-border)] pt-2 font-light">
+                        Mecanismo de cálculo: <code className="bg-[var(--color-white)] p-1 rounded font-mono text-[9px]">(Escrita * {c.peso_escrita} + Títulos * {c.peso_titulos}) / {totalPesos}</code>
                       </p>
                     </div>
 
                     {/* Real-time Status Changers Buttons for Admins */}
-                    <div className="pt-4 border-t border-slate-150 dark:border-slate-700/50 flex flex-wrap gap-2 justify-end">
+                    <div className="pt-4 border-t border-[var(--color-border)] flex flex-wrap gap-2 justify-end">
                       {c.status === 'Pendente' ? (
                         <>
                           <button
                             onClick={() => handleUpdateCandidatoStatus(c.id, 'Indeferido')}
-                            className="px-3 py-1.5 bg-rose-100 text-rose-800 hover:bg-rose-200 text-xs font-bold rounded-lg cursor-pointer"
+                            className="sp-btn sp-btn-danger"
                           >
                             Indeferir Inscrição
                           </button>
                           <button
                             onClick={() => handleUpdateCandidatoStatus(c.id, 'Homologado')}
-                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-md cursor-pointer"
+                            className="sp-btn sp-btn-primary"
                           >
                             Homologar Inscrição
                           </button>
@@ -1030,7 +1028,7 @@ export default function App() {
                       ) : (
                         <button
                           onClick={() => handleUpdateCandidatoStatus(c.id, 'Pendente')}
-                          className="px-3 py-1.5 border border-slate-250 dark:border-slate-700 text-slate-750 dark:text-slate-350 hover:bg-slate-50 text-xs font-bold rounded-lg cursor-pointer"
+                          className="sp-btn sp-btn-secondary"
                         >
                           Reverter para Pendente
                         </button>
@@ -1048,38 +1046,38 @@ export default function App() {
                 
                 return (
                   <div className="space-y-4">
-                    <div className="p-5 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl space-y-4 bg-slate-50/50 dark:bg-slate-900/10">
-                      
+                    <div className="p-5 border-2 border-dashed border-[var(--color-border)] rounded-xl space-y-4 bg-[var(--color-bg)]">
+
                       {/* Cabecalho Oficial */}
-                      <div className="text-center space-y-1.5 pb-3 border-b border-slate-200 dark:border-slate-700">
-                        <div className="w-8 h-8 rounded-lg bg-[#1e3a5f] text-white flex items-center justify-center font-black mx-auto text-xs">
+                      <div className="text-center space-y-1.5 pb-3 border-b border-[var(--color-border)]">
+                        <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)] text-white flex items-center justify-center font-black mx-auto text-xs">
                           SP
                         </div>
-                        <h4 className="text-xs font-black tracking-widest uppercase text-slate-800 dark:text-white">REPUBLICA FEDERATIVA DO BRASIL</h4>
-                        <p className="text-[10px] text-slate-500 font-bold dark:text-slate-400">EDITAL CONVOCATÓRIO OFICIAL • SELECTPRO</p>
+                        <h4 className="text-xs font-black tracking-widest uppercase text-[var(--color-text-primary)]">REPUBLICA FEDERATIVA DO BRASIL</h4>
+                        <p className="text-[10px] text-[var(--color-text-muted)] font-bold">EDITAL CONVOCATÓRIO OFICIAL • SELECTPRO</p>
                       </div>
 
                       {/* Info Evento */}
                       <div className="space-y-2 text-xs">
-                        <p><strong className="uppercase text-[10px] text-slate-400">Assunto:</strong> <span className="font-bold">{conv.tipo}</span></p>
-                        <p><strong className="uppercase text-[10px] text-slate-400">Edital Seletivo:</strong> <span className="font-bold font-mono">Nº {conv.edital}</span></p>
-                        <p><strong className="uppercase text-[10px] text-slate-400">Cargo Convocado:</strong> <span className="font-bold text-slate-700 dark:text-slate-300">{conv.cargo}</span></p>
-                        <p><strong className="uppercase text-[10px] text-slate-400">Data e Local:</strong> <span className="font-semibold text-slate-700 dark:text-slate-200 font-mono">{conv.data.split('-').reverse().join('/')} às {conv.hora}</span></p>
-                        <p><strong className="uppercase text-[10px] text-slate-400">Localização física:</strong> <span className="font-bold text-slate-800 dark:text-slate-100">{conv.local}</span></p>
+                        <p><strong className="uppercase text-[10px] text-[var(--color-text-muted)]">Assunto:</strong> <span className="font-bold text-[var(--color-text-primary)]">{conv.tipo}</span></p>
+                        <p><strong className="uppercase text-[10px] text-[var(--color-text-muted)]">Edital Seletivo:</strong> <span className="font-bold font-mono text-[var(--color-text-primary)]">Nº {conv.edital}</span></p>
+                        <p><strong className="uppercase text-[10px] text-[var(--color-text-muted)]">Cargo Convocado:</strong> <span className="font-bold text-[var(--color-text-primary)]">{conv.cargo}</span></p>
+                        <p><strong className="uppercase text-[10px] text-[var(--color-text-muted)]">Data e Local:</strong> <span className="font-semibold text-[var(--color-text-primary)] font-mono">{conv.data.split('-').reverse().join('/')} às {conv.hora}</span></p>
+                        <p><strong className="uppercase text-[10px] text-[var(--color-text-muted)]">Localização física:</strong> <span className="font-bold text-[var(--color-text-primary)]">{conv.local}</span></p>
                       </div>
 
                       {/* Lista de Convocados nomes */}
-                      <div className="pt-3 border-t border-slate-200 dark:border-slate-700 space-y-2">
-                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Candidatos especificamente Convocados ({matchedCandidatos.length}):</p>
-                        
+                      <div className="pt-3 border-t border-[var(--color-border)] space-y-2">
+                        <p className="text-[10px] font-black uppercase text-[var(--color-text-muted)] tracking-wider">Candidatos especificamente Convocados ({matchedCandidatos.length}):</p>
+
                         {matchedCandidatos.length === 0 ? (
-                          <p className="text-[11px] text-slate-450 italic">Nenhum candidato convocado ou localizado.</p>
+                          <p className="text-[11px] text-[var(--color-text-muted)] italic">Nenhum candidato convocado ou localizado.</p>
                         ) : (
-                          <div className="bg-white dark:bg-slate-900 rounded-lg p-2.5 divide-y divide-slate-100 dark:divide-slate-800 text-[11px]">
+                          <div className="bg-[var(--color-white)] rounded-lg p-2.5 divide-y divide-[var(--color-border-light)] text-[11px]">
                             {matchedCandidatos.map((mc, index) => (
                               <div key={mc.id} className="py-1.5 flex justify-between font-medium">
-                                <span className="text-slate-800 dark:text-slate-200">{index + 1}. {mc.nome}</span>
-                                <span className="font-mono text-slate-400">Insc. {mc.inscricao}</span>
+                                <span className="text-[var(--color-text-primary)]">{index + 1}. {mc.nome}</span>
+                                <span className="font-mono text-[var(--color-text-muted)]">Insc. {mc.inscricao}</span>
                               </div>
                             ))}
                           </div>
@@ -1087,19 +1085,18 @@ export default function App() {
                       </div>
 
                       {/* Termosecondary guidelines alert clause */}
-                      <p className="text-[10px] text-slate-400 text-center leading-relaxed">
+                      <p className="text-[10px] text-[var(--color-text-muted)] text-center leading-relaxed">
                         * Os convocados deverão apresentar-se no local determinado com antecedência de 30 minutos munidos de documento de identidade oficial válido com foto.
                       </p>
                     </div>
 
-                    <div className="pt-3 border-t border-slate-100 dark:border-slate-700/50 flex justify-end">
-                      <button 
-                        onClick={() => {
-                          showToast('Simulando impressão PDF da convocação...', 'success');
-                        }}
-                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow cursor-pointer "
+                    <div className="pt-3 border-t border-[var(--color-border)] flex justify-end">
+                      <button
+                        onClick={() => showToast('Simulando impressão PDF da convocação...', 'success')}
+                        className="sp-btn sp-btn-primary gap-2"
                         aria-label="Gerar PDF da Convocação"
                       >
+                        <i className="ti ti-printer text-sm"></i>
                         Imprimir Call Notice
                       </button>
                     </div>
@@ -1114,29 +1111,35 @@ export default function App() {
 
       {/* --- CONFIRM DIALOG OVERLAY --- */}
       {confirmState && (
-        <div className="fixed inset-0 z-55 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in font-sans">
+        <div className="sp-modal-overlay">
           <div className="fixed inset-0" onClick={() => setConfirmState(null)}></div>
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-150 dark:border-slate-700/60 w-full max-w-sm z-56 p-5 relative animate-scale-up">
-            <div className="flex items-start gap-3 text-xs">
-              <div className="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-100 dark:border-amber-900/30">
-                <i className="ti ti-alert-triangle text-xl animate-pulse"></i>
+          <div className="sp-modal-container sp-modal-container-sm">
+
+            <div className="sp-modal-header">
+              <div className="flex items-center gap-2">
+                <i className="ti ti-alert-triangle" style={{ color: 'var(--color-warning)', fontSize: '16px' }}></i>
+                <h3 className="sp-modal-title">Confirmação Requerida</h3>
               </div>
-              <div className="flex-1">
-                <h4 className="text-sm font-bold text-slate-850 dark:text-slate-100">Confirmação Requerida</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-normal font-medium">{confirmState.mensagem}</p>
+              <button onClick={() => setConfirmState(null)} className="sp-modal-close" aria-label="Fechar">
+                <i className="ti ti-x text-sm"></i>
+              </button>
+            </div>
+
+            <div className="sp-modal-body">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
+                  <i className="ti ti-alert-triangle text-xl animate-pulse"></i>
+                </div>
+                <p className="text-sm text-[var(--color-text-secondary)] leading-normal font-medium pt-2">{confirmState.mensagem}</p>
               </div>
             </div>
-            <div className="mt-5 flex justify-end gap-2 text-[11px] font-bold">
-              <button 
-                onClick={() => setConfirmState(null)}
-                className="px-3.5 py-1.5 border border-slate-205 dark:border-slate-700 text-slate-655 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
-              >
+
+            <div className="sp-modal-footer">
+              <button onClick={() => setConfirmState(null)} className="sp-btn sp-btn-secondary">
                 Cancelar
               </button>
-              <button 
-                onClick={confirmState.callback}
-                className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg shadow-md cursor-pointer"
-              >
+              <button onClick={confirmState.callback}
+                className="sp-btn" style={{ backgroundColor: 'var(--color-warning)', color: '#1a2e1f', fontWeight: 700 }}>
                 Confirmar
               </button>
             </div>

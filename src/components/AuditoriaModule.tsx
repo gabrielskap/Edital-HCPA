@@ -467,39 +467,34 @@ export default function AuditoriaModule({ logs, onClearLogs, showToast, logActio
                 <p className="text-xs text-slate-450 dark:text-slate-500 mt-1">Experimente alterar os filtros de período e busca.</p>
               </div>
             ) : (
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-150 dark:border-slate-700/50 overflow-hidden">
+              <div className="sp-table-container">
                 <div className="overflow-x-auto w-full">
-                  <table className="w-full text-left text-xs" id="table-logs-auditoria">
-                    <thead className="bg-slate-50 dark:bg-slate-900 text-slate-450 dark:text-slate-400 font-bold uppercase tracking-wider">
-                      <tr className="border-b border-slate-200 dark:border-slate-700/30">
-                        <th scope="col" className="p-3.5 min-w-[125px]">Data e Hora</th>
-                        <th scope="col" className="p-3.5 min-w-[110px]">Usuário</th>
-                        <th scope="col" className="p-3.5 min-w-[150px]">Ação / Evento</th>
-                        <th scope="col" className="p-3.5 min-w-[95px]">Módulo</th>
-                        <th scope="col" className="p-3.5 min-w-[160px]">Registro Afetado</th>
-                        <th scope="col" className="p-3.5 min-w-[100px]">Endereço IP</th>
-                        <th scope="col" className="p-3.5 text-center min-w-[80px]">Ações</th>
+                  <table className="sp-table" id="table-logs-auditoria">
+                    <thead>
+                      <tr>
+                        <th scope="col" style={{ minWidth: '125px' }}>Data e Hora</th>
+                        <th scope="col" style={{ minWidth: '110px' }}>Usuário</th>
+                        <th scope="col" style={{ minWidth: '150px' }}>Ação / Evento</th>
+                        <th scope="col" style={{ minWidth: '95px' }}>Módulo</th>
+                        <th scope="col" style={{ minWidth: '160px' }}>Registro Afetado</th>
+                        <th scope="col" style={{ minWidth: '100px' }}>Endereço IP</th>
+                        <th scope="col" style={{ textAlign: 'center', minWidth: '80px' }}>Ações</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700/40 font-sans">
+                    <tbody>
                       {filteredLogs.map((log) => {
                         const isSensitive = isSensitiveAction(log.acao);
                         return (
-                          <tr 
-                            key={log.id}
-                            className={`transition-all ${
-                              isSensitive 
-                              ? 'bg-red-50/70 hover:bg-red-100/60 dark:bg-red-950/20 dark:hover:bg-red-950/30 text-slate-801' 
-                              : 'hover:bg-slate-50 dark:hover:bg-slate-700/10'
-                            }`}
+                          <tr key={log.id}
+                            style={isSensitive ? { backgroundColor: 'rgba(254,226,226,0.4)' } : undefined}
                           >
-                            <td className="p-3.5 text-slate-500 dark:text-slate-400 font-mono select-all">
+                            <td className="font-mono text-[var(--color-text-muted)] select-all text-[10px]">
                               {log.dataHora}
                             </td>
-                            <td className="p-3.5 font-bold text-slate-700 dark:text-slate-200">
+                            <td className="font-bold text-[var(--color-text-primary)]">
                               {log.usuario}
                             </td>
-                            <td className="p-3.5 font-semibold">
+                            <td className="font-semibold text-[var(--color-text-primary)]">
                               <span className="flex items-center gap-1.5">
                                 {isSensitive && (
                                   <span className="w-2 h-2 rounded-full bg-red-500 inline-block" title="Ação de segurança sensível"></span>
@@ -507,26 +502,26 @@ export default function AuditoriaModule({ logs, onClearLogs, showToast, logActio
                                 {log.acao}
                               </span>
                             </td>
-                            <td className="p-3.5">
-                              <span className="px-2 py-0.5 rounded text-[10px] font-black bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 uppercase">
+                            <td>
+                              <span className="sp-badge sp-badge-neutral uppercase font-mono">
                                 {log.modulo}
                               </span>
                             </td>
-                            <td className="p-3.5 text-slate-700 dark:text-slate-300">
-                              <p className="font-semibold text-xs leading-tight">{log.registro}</p>
-                              <p className="text-[10px] text-slate-400 dark:text-slate-450 mt-0.5 truncate max-w-[200px]" title={log.detalhe}>{log.detalhe}</p>
+                            <td className="text-[var(--color-text-secondary)]">
+                              <p className="font-semibold leading-tight">{log.registro}</p>
+                              <p className="text-[10px] text-[var(--color-text-muted)] mt-0.5 truncate max-w-[200px]" title={log.detalhe}>{log.detalhe}</p>
                             </td>
-                            <td className="p-3.5 text-slate-450 dark:text-slate-400 font-mono text-[10px]">
+                            <td className="font-mono text-[10px] text-[var(--color-text-muted)]">
                               {log.ip}
                             </td>
-                            <td className="p-3.5 text-center">
+                            <td style={{ textAlign: 'center' }}>
                               <button
                                 onClick={() => setDetailedLog(log)}
-                                className="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-250 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 hover:text-blue-600 cursor-pointer transition-colors"
+                                className="sp-btn-icon sp-btn-icon-view"
                                 title="Visualizar metadados detalhados do log"
                                 id={`view-log-btn-${log.id}`}
                               >
-                                <i className="ti ti-info-circle text-base"></i>
+                                <i className="ti ti-info-circle text-sm"></i>
                               </button>
                             </td>
                           </tr>
@@ -535,7 +530,7 @@ export default function AuditoriaModule({ logs, onClearLogs, showToast, logActio
                     </tbody>
                   </table>
                 </div>
-                <div className="py-3 px-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-150 dark:border-slate-700/40 text-[10px] text-slate-450 dark:text-slate-500">
+                <div className="py-3 px-4 bg-[var(--color-bg)] border-t border-[var(--color-border)] text-[10px] text-[var(--color-text-muted)]">
                   Trilha auditada e selada com algoritmos criptográficos em conformidade de compliance da LGPD pública. Total de logs correspondentes: <strong>{filteredLogs.length}</strong>.
                 </div>
               </div>
@@ -567,79 +562,79 @@ export default function AuditoriaModule({ logs, onClearLogs, showToast, logActio
               </div>
 
               {/* Tabela de Recursos */}
-              <div className="overflow-x-auto w-full">
-                <table className="w-full text-xs text-left" id="table-recursos-adm">
-                  <thead className="bg-slate-50/40 dark:bg-slate-800/40 text-[10px] font-bold uppercase text-slate-450 tracking-wider border-b border-slate-100 dark:border-slate-700">
-                    <tr>
-                      <th className="p-3.5 min-w-[150px]">Candidato</th>
-                      <th className="p-3.5 min-w-[150px]">Processo Seletivo</th>
-                      <th className="p-3.5 min-w-[100px]">Data Interposição</th>
-                      <th className="p-3.5 min-w-[280px]">Fundamentação do Candidato</th>
-                      <th className="p-3.5 min-w-[90px]">Status</th>
-                      <th className="p-3.5 text-center min-w-[110px]">Julgamento</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700/60 leading-normal">
-                    {recursos.map(rec => (
-                      <tr key={rec.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-700/10">
-                        <td className="p-3.5">
-                          <p className="font-bold text-slate-800 dark:text-slate-100">{rec.candidato.split(' ')[0]} {rec.candidato.split(' ')[1]}</p>
-                          <p className="text-[10px] text-slate-400 font-mono mt-0.5">{rec.candidato.substring(rec.candidato.indexOf('('))}</p>
-                        </td>
-                        <td className="p-3.5 text-slate-700 dark:text-slate-350 font-semibold text-xs">
-                          {rec.processo}
-                        </td>
-                        <td className="p-3.5 font-mono text-slate-500 dark:text-slate-400">
-                          {rec.dataInterposicao.split('-').reverse().join('/')}
-                        </td>
-                        <td className="p-3.5">
-                          <div className="text-slate-655 dark:text-slate-350 font-medium italic whitespace-pre-line max-w-[280px] break-words text-xs">
-                            "{rec.motivo}"
-                          </div>
-                          {rec.justificativa && (
-                            <div className="mt-2.5 p-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700/40 text-[11px]">
-                              <p className="font-bold text-slate-500 uppercase text-[9px] tracking-wide">Comissão de Recursos - Acórdão:</p>
-                              <p className="text-slate-700 dark:text-slate-300 mt-1">{rec.justificativa}</p>
-                              {rec.dataAvaliacao && <span className="text-[9px] text-slate-400 mt-1 block">Selado em: {rec.dataAvaliacao}</span>}
-                            </div>
-                          )}
-                        </td>
-                        <td className="p-3.5">
-                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase text-center ${
-                            rec.status === 'Deferido' 
-                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/35 dark:text-emerald-300' 
-                            : rec.status === 'Indeferido' 
-                            ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/35 dark:text-rose-300'
-                            : 'bg-amber-100 text-amber-800 dark:bg-amber-950/35 dark:text-amber-300 animate-pulse'
-                          }`}>
-                            {rec.status}
-                          </span>
-                        </td>
-                        <td className="p-3.5 text-center">
-                          {rec.status === 'Pendente' ? (
-                            <button
-                              onClick={() => {
-                                setSelectedRecurso(rec);
-                                setDecisaoStatus('Deferido');
-                                setJustificativaTexto('');
-                              }}
-                              className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-sm hover:shadow transition-all cursor-pointer flex items-center gap-1 mx-auto"
-                              id={`evaluate-btn-appeal-${rec.id}`}
-                            >
-                              <i className="ti ti-gavel text-sm"></i>
-                              Registrar Decisão
-                            </button>
-                          ) : (
-                            <span className="text-slate-400 dark:text-slate-500 font-bold italic text-[11px] flex items-center justify-center gap-1">
-                              <i className="ti ti-checkbox text-emerald-500 text-base"></i>
-                              Concluído
-                            </span>
-                          )}
-                        </td>
+              <div className="sp-table-container">
+                <div className="overflow-x-auto w-full">
+                  <table className="sp-table" id="table-recursos-adm">
+                    <thead>
+                      <tr>
+                        <th scope="col" style={{ minWidth: '150px' }}>Candidato</th>
+                        <th scope="col" style={{ minWidth: '150px' }}>Processo Seletivo</th>
+                        <th scope="col" style={{ minWidth: '100px' }}>Data Interposição</th>
+                        <th scope="col" style={{ minWidth: '280px' }}>Fundamentação do Candidato</th>
+                        <th scope="col" style={{ minWidth: '90px' }}>Status</th>
+                        <th scope="col" style={{ textAlign: 'center', minWidth: '110px' }}>Julgamento</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {recursos.map(rec => (
+                        <tr key={rec.id}>
+                          <td>
+                            <p className="font-bold text-[var(--color-text-primary)]">{rec.candidato.split(' ')[0]} {rec.candidato.split(' ')[1]}</p>
+                            <p className="text-[10px] text-[var(--color-text-muted)] font-mono mt-0.5">{rec.candidato.substring(rec.candidato.indexOf('('))}</p>
+                          </td>
+                          <td className="font-semibold text-[var(--color-text-secondary)]">
+                            {rec.processo}
+                          </td>
+                          <td className="font-mono text-[var(--color-text-muted)] text-[10px]">
+                            {rec.dataInterposicao.split('-').reverse().join('/')}
+                          </td>
+                          <td>
+                            <div className="text-[var(--color-text-secondary)] font-medium italic whitespace-pre-line max-w-[280px] break-words text-xs">
+                              "{rec.motivo}"
+                            </div>
+                            {rec.justificativa && (
+                              <div className="mt-2.5 p-2 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] text-[11px]">
+                                <p className="font-bold text-[var(--color-text-muted)] uppercase text-[9px] tracking-wide">Comissão de Recursos - Acórdão:</p>
+                                <p className="text-[var(--color-text-secondary)] mt-1">{rec.justificativa}</p>
+                                {rec.dataAvaliacao && <span className="text-[9px] text-[var(--color-text-muted)] mt-1 block">Selado em: {rec.dataAvaliacao}</span>}
+                              </div>
+                            )}
+                          </td>
+                          <td>
+                            <span className={`sp-badge ${
+                              rec.status === 'Deferido' ? 'sp-badge-success'
+                              : rec.status === 'Indeferido' ? 'sp-badge-encerrado'
+                              : 'sp-badge-pendente'
+                            }`}>
+                              {rec.status}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            {rec.status === 'Pendente' ? (
+                              <button
+                                onClick={() => {
+                                  setSelectedRecurso(rec);
+                                  setDecisaoStatus('Deferido');
+                                  setJustificativaTexto('');
+                                }}
+                                className="sp-btn sp-btn-primary gap-1"
+                                id={`evaluate-btn-appeal-${rec.id}`}
+                              >
+                                <i className="ti ti-gavel text-sm"></i>
+                                Registrar Decisão
+                              </button>
+                            ) : (
+                              <span className="text-[var(--color-text-muted)] font-bold italic text-[11px] flex items-center justify-center gap-1">
+                                <i className="ti ti-checkbox text-emerald-500 text-base"></i>
+                                Concluído
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
@@ -826,82 +821,65 @@ export default function AuditoriaModule({ logs, onClearLogs, showToast, logActio
 
       {/* 1) MODAL: JULGAMENTO DE RECURSO */}
       {selectedRecurso !== null && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in text-xs" id="modal-appeal-decide">
+        <div className="sp-modal-overlay" id="modal-appeal-decide">
           <div className="fixed inset-0" onClick={() => setSelectedRecurso(null)}></div>
-          
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700/80 w-full max-w-lg z-50 max-h-[90vh] overflow-y-auto relative animate-scale-up p-5 text-slate-850 dark:text-slate-100 font-sans">
-            
-            {/* Header */}
-            <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-700">
-              <h3 className="font-black text-sm text-slate-801 dark:text-white uppercase flex items-center gap-1.5">
-                <i className="ti ti-gavel text-base text-blue-500"></i>
-                Registrar Julgamento de Recurso
-              </h3>
-              <button 
-                onClick={() => setSelectedRecurso(null)}
-                className="p-1 px-2 rounded-md hover:bg-slate-105 text-slate-400 hover:text-slate-700 cursor-pointer text-xs"
-              >
-                <i className="ti ti-x text-lg"></i>
+          <div className="sp-modal-container" style={{ maxWidth: '560px' }}>
+
+            <div className="sp-modal-header">
+              <div className="flex items-center gap-2">
+                <i className="ti ti-gavel" style={{ color: 'var(--color-primary)', fontSize: '16px' }}></i>
+                <h3 className="sp-modal-title">Registrar Julgamento de Recurso</h3>
+              </div>
+              <button onClick={() => setSelectedRecurso(null)} className="sp-modal-close" aria-label="Fechar">
+                <i className="ti ti-x text-sm"></i>
               </button>
             </div>
 
-            {/* Information about appeal */}
-            <div className="my-4 bg-[#f0f4f9] dark:bg-slate-900/40 p-4 rounded-lg space-y-2 border border-slate-250/20 text-xs">
-              <p><strong>Candidato:</strong> {selectedRecurso.candidato}</p>
-              <p><strong>Processo/Vaga:</strong> {selectedRecurso.processo}</p>
-              <p><strong>Data de Interposição:</strong> {selectedRecurso.dataInterposicao.split('-').reverse().join('/')}</p>
-              <div className="pt-2 border-t border-slate-200 dark:border-slate-700/60 font-medium">
-                <p className="font-bold text-slate-450 text-[10px] uppercase">Contestação Declarada pelo Candidato:</p>
-                <p className="italic text-slate-600 dark:text-slate-350 mt-1">"{selectedRecurso.motivo}"</p>
-              </div>
-            </div>
+            <form onSubmit={handleSaveDecision}>
+              <div className="sp-modal-body space-y-4">
 
-            {/* Form */}
-            <form onSubmit={handleSaveDecision} className="space-y-4">
-              <div className="space-y-1">
-                <label htmlFor="appeal-decision-select" className="text-xs font-bold text-slate-500 dark:text-slate-455">Decisão da Comissão Seletiva *</label>
-                <select
-                  id="appeal-decision-select"
-                  className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2.5 font-bold text-slate-805 dark:text-slate-200 focus:ring-2 focus:ring-blue-500 text-xs"
-                  value={decisaoStatus}
-                  onChange={(e) => setDecisaoStatus(e.target.value as 'Deferido' | 'Indeferido')}
-                >
-                  <option value="Deferido">Deferir Recurso (Acolher Contestação)</option>
-                  <option value="Indeferido">Indeferir Recurso (Manter Decisão Original)</option>
-                </select>
-              </div>
+                <div className="bg-[var(--color-primary-light)] p-4 rounded-lg space-y-2 border border-[var(--color-border)] text-xs">
+                  <p className="text-[var(--color-text-secondary)]"><strong className="text-[var(--color-text-primary)]">Candidato:</strong> {selectedRecurso.candidato}</p>
+                  <p className="text-[var(--color-text-secondary)]"><strong className="text-[var(--color-text-primary)]">Processo/Vaga:</strong> {selectedRecurso.processo}</p>
+                  <p className="text-[var(--color-text-secondary)]"><strong className="text-[var(--color-text-primary)]">Data de Interposição:</strong> {selectedRecurso.dataInterposicao.split('-').reverse().join('/')}</p>
+                  <div className="pt-2 border-t border-[var(--color-border)] font-medium">
+                    <p className="font-bold text-[var(--color-text-muted)] text-[10px] uppercase">Contestação Declarada pelo Candidato:</p>
+                    <p className="italic text-[var(--color-text-secondary)] mt-1">"{selectedRecurso.motivo}"</p>
+                  </div>
+                </div>
 
-              <div className="space-y-1">
-                <label htmlFor="appeal-decision-justification" className="text-xs font-bold text-slate-500 dark:text-slate-455">Descrição Técnica do Julgamento / Justificativa *</label>
-                <textarea
-                  id="appeal-decision-justification"
-                  rows={4}
-                  required
-                  placeholder="Forneça de forma detalhada o parecer da banca de validação para fundamentar a decisão..."
-                  className="w-full border border-slate-250 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-lg p-2.5 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 font-medium text-xs leading-relaxed"
-                  value={justificativaTexto}
-                  onChange={(e) => setJustificativaTexto(e.target.value)}
-                ></textarea>
-                <p className="text-[10px] text-slate-400 italic">Essas notas serão seladas de forma perpétua nas trilhas de auditoria da instituição.</p>
-              </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="appeal-decision-select">Decisão da Comissão Seletiva *</label>
+                  <select id="appeal-decision-select" className="w-full sp-input font-bold"
+                    value={decisaoStatus}
+                    onChange={(e) => setDecisaoStatus(e.target.value as 'Deferido' | 'Indeferido')}
+                  >
+                    <option value="Deferido">Deferir Recurso (Acolher Contestação)</option>
+                    <option value="Indeferido">Indeferir Recurso (Manter Decisão Original)</option>
+                  </select>
+                </div>
 
-              {/* Actions submit */}
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setSelectedRecurso(null)}
-                  className="px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-50 hover:text-slate-705 font-bold text-xs rounded-lg cursor-pointer"
-                >
+                <div className="space-y-1.5">
+                  <label htmlFor="appeal-decision-justification">Descrição Técnica do Julgamento / Justificativa *</label>
+                  <textarea id="appeal-decision-justification" rows={4} required
+                    placeholder="Forneça de forma detalhada o parecer da banca de validação para fundamentar a decisão..."
+                    className="w-full sp-input font-medium leading-relaxed"
+                    style={{ resize: 'vertical' }}
+                    value={justificativaTexto}
+                    onChange={(e) => setJustificativaTexto(e.target.value)}
+                  ></textarea>
+                  <p className="text-[10px] text-[var(--color-text-muted)] italic">Essas notas serão seladas de forma perpétua nas trilhas de auditoria da instituição.</p>
+                </div>
+
+              </div>
+              <div className="sp-modal-footer">
+                <button type="button" onClick={() => setSelectedRecurso(null)} className="sp-btn sp-btn-secondary">
                   Cancelar
                 </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-sm hover:shadow transition-all cursor-pointer"
-                >
+                <button type="submit" className="sp-btn sp-btn-primary">
                   Confirmar e Salvar Acórdão
                 </button>
               </div>
-
             </form>
           </div>
         </div>
@@ -909,77 +887,59 @@ export default function AuditoriaModule({ logs, onClearLogs, showToast, logActio
 
       {/* 2) MODAL: DETALHES COMPLETOS DE UM LOG */}
       {detailedLog !== null && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in text-xs" id="modal-log-details">
+        <div className="sp-modal-overlay" id="modal-log-details">
           <div className="fixed inset-0" onClick={() => setDetailedLog(null)}></div>
-          
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700/80 w-full max-w-md z-50 animate-scale-up p-5 text-slate-850 dark:text-slate-100 font-sans space-y-4">
-            
-            {/* Header */}
-            <div className="flex justify-between items-center pb-2.5 border-b border-slate-100 dark:border-slate-700">
-              <h3 className="font-bold text-sm text-slate-800 dark:text-white uppercase flex items-center gap-1.5">
-                <i className="ti ti-shield-check text-emerald-500 text-base"></i>
-                Dossiê do Registro de Log
-              </h3>
-              <button 
-                onClick={() => setDetailedLog(null)}
-                className="text-slate-400 hover:text-slate-705 p-1 cursor-pointer"
-                aria-label="Minomodal X de fechar"
-              >
-                <i className="ti ti-x text-lg"></i>
+          <div className="sp-modal-container" style={{ maxWidth: '480px' }}>
+
+            <div className="sp-modal-header">
+              <div className="flex items-center gap-2">
+                <i className="ti ti-shield-check" style={{ color: 'var(--color-primary)', fontSize: '16px' }}></i>
+                <h3 className="sp-modal-title">Dossiê do Registro de Log</h3>
+              </div>
+              <button onClick={() => setDetailedLog(null)} className="sp-modal-close" aria-label="Fechar">
+                <i className="ti ti-x text-sm"></i>
               </button>
             </div>
 
-            {/* content listing with values */}
-            <div className="space-y-2 text-xs leading-normal">
-              
-              <div className="grid grid-cols-3 py-1.5 border-b border-slate-100 dark:border-slate-700/50">
-                <span className="font-bold text-slate-450 uppercase uppercase">Identificador ID:</span>
-                <span className="col-span-2 font-mono text-slate-800 dark:text-slate-200">{detailedLog.id}</span>
-              </div>
+            <div className="sp-modal-body space-y-2 text-xs leading-normal">
 
-              <div className="grid grid-cols-3 py-1.5 border-b border-slate-100 dark:border-slate-700/50">
-                <span className="font-bold text-slate-450 uppercase">Data e Hora:</span>
-                <span className="col-span-2 font-mono text-slate-800 dark:text-slate-200">{detailedLog.dataHora}</span>
-              </div>
+              {[
+                { label: 'Identificador ID', value: detailedLog.id, mono: true },
+                { label: 'Data e Hora', value: detailedLog.dataHora, mono: true },
+                { label: 'Operador', value: detailedLog.usuario, bold: true },
+                { label: 'Origem IP', value: detailedLog.ip, mono: true },
+              ].map(({ label, value, mono, bold }) => (
+                <div key={label} className="grid grid-cols-3 py-1.5 border-b border-[var(--color-border)]">
+                  <span className="font-bold text-[var(--color-text-muted)] uppercase text-[10px]">{label}:</span>
+                  <span className={`col-span-2 text-[var(--color-text-primary)] ${mono ? 'font-mono' : ''} ${bold ? 'font-bold' : ''}`}>{String(value)}</span>
+                </div>
+              ))}
 
-              <div className="grid grid-cols-3 py-1.5 border-b border-slate-100 dark:border-slate-700/50">
-                <span className="font-bold text-slate-450 uppercase">Operador:</span>
-                <span className="col-span-2 font-bold text-slate-800 dark:text-slate-200">{detailedLog.usuario}</span>
-              </div>
-
-              <div className="grid grid-cols-3 py-1.5 border-b border-slate-100 dark:border-slate-700/50">
-                <span className="font-bold text-slate-450 uppercase text-[11px]">Módulo:</span>
+              <div className="grid grid-cols-3 py-1.5 border-b border-[var(--color-border)]">
+                <span className="font-bold text-[var(--color-text-muted)] uppercase text-[10px]">Módulo:</span>
                 <span className="col-span-2">
-                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-50 border dark:bg-slate-900 border-slate-300 dark:border-slate-700 font-bold uppercase text-slate-600 dark:text-slate-300">
-                    {detailedLog.modulo}
-                  </span>
+                  <span className="sp-badge sp-badge-neutral uppercase font-mono">{detailedLog.modulo}</span>
                 </span>
               </div>
 
-              <div className="grid grid-cols-3 py-1.5 border-b border-slate-100 dark:border-slate-700/50">
-                <span className="font-bold text-slate-450 uppercase text-[11px]">Origem IP:</span>
-                <span className="col-span-2 font-mono text-slate-800 dark:text-slate-200">{detailedLog.ip}</span>
-              </div>
-
-              <div className="grid grid-cols-3 py-1.5 border-b border-slate-100 dark:border-slate-700/50">
-                <span className="font-bold text-slate-450 uppercase text-[11px]">Ação efetuada:</span>
-                <span className="col-span-2 font-extrabold text-blue-600 dark:text-blue-400">{detailedLog.acao}</span>
+              <div className="grid grid-cols-3 py-1.5 border-b border-[var(--color-border)]">
+                <span className="font-bold text-[var(--color-text-muted)] uppercase text-[10px]">Ação efetuada:</span>
+                <span className="col-span-2 font-extrabold text-[var(--color-primary)]">{detailedLog.acao}</span>
               </div>
 
               <div className="py-2 space-y-1">
-                <span className="font-bold text-slate-450 uppercase text-[10px] tracking-wider block">Assunto / Registro:</span>
-                <p className="font-black text-slate-800 dark:text-slate-100 bg-[#f0f4f9] dark:bg-slate-900/60 p-2.5 rounded-lg border border-slate-250/20">{detailedLog.registro}</p>
+                <span className="font-bold text-[var(--color-text-muted)] uppercase text-[10px] tracking-wider block">Assunto / Registro:</span>
+                <p className="font-black text-[var(--color-text-primary)] bg-[var(--color-primary-light)] p-2.5 rounded-lg border border-[var(--color-border)]">{detailedLog.registro}</p>
               </div>
 
               <div className="py-2 space-y-1">
-                <span className="font-bold text-slate-450 uppercase text-[10px] tracking-wider block">Descritor Detalhes:</span>
-                <p className="text-slate-655 dark:text-slate-300 font-medium leading-relaxed bg-[#f0f4f9] dark:bg-slate-900/60 p-3 rounded-lg border border-slate-250/20 whitespace-pre-line">
+                <span className="font-bold text-[var(--color-text-muted)] uppercase text-[10px] tracking-wider block">Descritor Detalhes:</span>
+                <p className="text-[var(--color-text-secondary)] font-medium leading-relaxed bg-[var(--color-primary-light)] p-3 rounded-lg border border-[var(--color-border)] whitespace-pre-line">
                   {detailedLog.detalhe}
                 </p>
               </div>
 
-              {/* Verification simulated sealing lock */}
-              <div className="pt-3 border-t border-slate-150 dark:border-slate-700 flex items-center justify-between text-slate-400 dark:text-slate-500 font-mono text-[9px] mt-4">
+              <div className="pt-3 border-t border-[var(--color-border)] flex items-center justify-between text-[var(--color-text-muted)] font-mono text-[9px]">
                 <p>SEALING HASH SIGN_VALID</p>
                 <div className="flex items-center gap-1 text-emerald-500 font-bold">
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
@@ -989,12 +949,8 @@ export default function AuditoriaModule({ logs, onClearLogs, showToast, logActio
 
             </div>
 
-            {/* button dismiss modal */}
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex justify-end">
-              <button
-                onClick={() => setDetailedLog(null)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-707 dark:text-slate-203 font-bold text-xs rounded-lg cursor-pointer"
-              >
+            <div className="sp-modal-footer">
+              <button onClick={() => setDetailedLog(null)} className="sp-btn sp-btn-secondary">
                 Dispensar Detalhes
               </button>
             </div>

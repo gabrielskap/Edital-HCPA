@@ -20,6 +20,48 @@ interface LocalToast {
   tipo: 'success' | 'error' | 'warning';
 }
 
+type ImportStage = 'idle' | 'validating' | 'preview' | 'importing' | 'complete';
+
+interface ImportPreviewRow {
+  id: string;
+  nome: string;
+  cpf: string;
+  email: string;
+  telefone: string;
+  cargo: string;
+  edital: string;
+  racial: string;
+  deficiencia: boolean;
+  validStatus: 'ok' | 'warn' | 'error';
+  issue?: string;
+}
+
+interface ImportBatch {
+  id: string;
+  fileName: string;
+  dataHora: string;
+  total: number;
+  importados: number;
+  rejeitados: number;
+}
+
+type CurriculoStage = 'idle' | 'reading' | 'preview' | 'saving';
+
+interface CurriculoData {
+  nome: string;
+  email: string;
+  telefone: string;
+  cpf: string;
+  nascimento: string;
+  cargo: string;
+  escolaridade: string;
+  racial: string;
+  deficiencia: boolean;
+  edital: string;
+  habilidades: string;
+  resumo: string;
+}
+
 export default function CandidatosModule({ 
   candidatos, 
   editais, 
@@ -34,6 +76,7 @@ export default function CandidatosModule({
 }: CandidatosModuleProps) {
   
   // Tabs State: "cadastro" or "avaliacao"
+  const [activeView, setActiveView] = React.useState<'listagem' | 'importacao' | 'curriculo'>('listagem');
   const [activeTab, setActiveTab] = React.useState<'cadastro' | 'avaliacao'>('cadastro');
 
   // Load and keep candidates in sync
@@ -106,6 +149,28 @@ export default function CandidatosModule({
   const [evalFilterStatus, setEvalFilterStatus] = React.useState('Todos');
   const [isSortedByClassification, setIsSortedByClassification] = React.useState(false);
   const [isConfirmPublishOpen, setIsConfirmPublishOpen] = React.useState(false);
+
+  // --- IMPORTAÇÃO EM LOTE STATES ---
+  const [importStage, setImportStage] = React.useState<ImportStage>('idle');
+  const [isDragOver, setIsDragOver] = React.useState(false);
+  const [importFileName, setImportFileName] = React.useState<string | null>(null);
+  const [importFileSize, setImportFileSize] = React.useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [importPreviewRows, setImportPreviewRows] = React.useState<ImportPreviewRow[]>([]);
+  const [importBatches, setImportBatches] = React.useState<ImportBatch[]>([
+    { id: '1', fileName: 'candidatos_edital_01_2026.xlsx', dataHora: '2026-06-08 14:32', total: 152, importados: 148, rejeitados: 4 }
+  ]);
+
+  // --- LEITOR DE CURRÍCULO STATES ---
+  const [curriculoStage, setCurriculoStage] = React.useState<CurriculoStage>('idle');
+  const [isCvDragOver, setIsCvDragOver] = React.useState(false);
+  const [curriculoFileName, setCurriculoFileName] = React.useState<string | null>(null);
+  const cvFileInputRef = React.useRef<HTMLInputElement>(null);
+  const [curriculoForm, setCurriculoForm] = React.useState<CurriculoData>({
+    nome: '', email: '', telefone: '', cpf: '', nascimento: '',
+    cargo: '', escolaridade: 'Superior', racial: 'Branca', deficiencia: false,
+    edital: '', habilidades: '', resumo: ''
+  });
 
   // Collapsible sections state for classification results below the table
   const [isAcCollapsed, setIsAcCollapsed] = React.useState(false);
@@ -404,6 +469,155 @@ export default function CandidatosModule({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // --- IMPORT HANDLERS ---
+  const handleFileSelect = (file: File) => {
+    const validExts = ['.csv', '.xls', '.xlsx'];
+    const ext = file.name.toLowerCase().slice(file.name.lastIndexOf('.'));
+    if (!validExts.includes(ext)) {
+      showLocalToast('Formato inválido. Use CSV, XLS ou XLSX.', 'error');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      showLocalToast('Arquivo excede o limite de 10 MB.', 'error');
+      return;
+    }
+    setImportFileName(file.name);
+    setImportFileSize((file.size / 1024).toFixed(0) + ' KB');
+    setImportStage('validating');
+    setTimeout(() => {
+      const mockRows: ImportPreviewRow[] = [
+        { id: '1', nome: 'Ana Paula Souza', cpf: '123.456.789-00', email: 'ana.souza@email.com', telefone: '(51) 98765-4321', cargo: 'Analista de TI I', edital: editais[0]?.numero || '01/2026', racial: 'Branca', deficiencia: false, validStatus: 'ok' },
+        { id: '2', nome: 'Carlos Eduardo Lima', cpf: '234.567.890-11', email: 'carlos.lima@email.com', telefone: '(51) 91234-5678', cargo: 'Técnico de Enfermagem', edital: editais[0]?.numero || '01/2026', racial: 'Parda', deficiencia: false, validStatus: 'ok' },
+        { id: '3', nome: 'Fernanda Costa', cpf: '345.678.901-22', email: 'fernanda.costa@email.com', telefone: '(51) 97654-3210', cargo: 'Analista de TI I', edital: editais[0]?.numero || '01/2026', racial: 'Preta', deficiencia: true, validStatus: 'ok' },
+        { id: '4', nome: 'Rodrigo Mendes', cpf: '456.789.012-33', email: 'rodrigo.mendes@email.com', telefone: '(51) 99988-7766', cargo: 'Médico Clínico Geral', edital: editais[1]?.numero || '02/2026', racial: 'Branca', deficiencia: false, validStatus: 'ok' },
+        { id: '5', nome: 'Juliana Alves', cpf: '567.890.123-44', email: 'juliana_alves_INVALIDO', telefone: '(51) 98877-6655', cargo: 'Assistente Administrativo', edital: editais[0]?.numero || '01/2026', racial: 'Parda', deficiencia: false, validStatus: 'error', issue: 'E-mail com formato inválido' },
+        { id: '6', nome: 'Marcos Oliveira', cpf: '123.456.789-00', email: 'marcos.oliveira@email.com', telefone: '(51) 96655-4433', cargo: 'Técnico de Enfermagem', edital: editais[0]?.numero || '01/2026', racial: 'Branca', deficiencia: false, validStatus: 'warn', issue: 'CPF duplicado (mesmo que linha 1)' },
+      ];
+      setImportPreviewRows(mockRows);
+      setImportStage('preview');
+    }, 1600);
+  };
+
+  const handleImportConfirm = () => {
+    setImportStage('importing');
+    setTimeout(() => {
+      const validRows = importPreviewRows.filter(r => r.validStatus === 'ok');
+      const newCandidates: Candidato[] = validRows.map((row, idx) => ({
+        id: Date.now() + idx,
+        inscricao: (2026001007 + localCandidatos.length + idx + 1).toString(),
+        nome: row.nome,
+        cpf: row.cpf,
+        email: row.email,
+        telefone: row.telefone,
+        cargo: row.cargo,
+        edital: row.edital,
+        racial: row.racial,
+        deficiencia: row.deficiencia,
+        modalidade: row.deficiencia ? 'PcD' : (['Preta', 'Parda', 'Negra', 'Negros'].includes(row.racial) ? 'Negros' : 'AC'),
+        nascimento: '1990-01-01',
+        escolaridade: 'Superior',
+        status: 'Pendente',
+        notaEscrita: 0,
+        notaTitulos: 0,
+        peso_escrita: 6,
+        peso_titulos: 4
+      }));
+      if (setCandidatos) setCandidatos(prev => [...newCandidates, ...prev]);
+      else setLocalCandidatos(prev => [...newCandidates, ...prev]);
+      const newBatch: ImportBatch = {
+        id: Date.now().toString(),
+        fileName: importFileName || 'arquivo.csv',
+        dataHora: new Date().toISOString().replace('T', ' ').substring(0, 16),
+        total: importPreviewRows.length,
+        importados: validRows.length,
+        rejeitados: importPreviewRows.length - validRows.length
+      };
+      setImportBatches(prev => [newBatch, ...prev]);
+      if (logAction) logAction('Importação em Lote', 'Candidatos', `Lote: ${importFileName}`, `${validRows.length} candidatos importados, ${importPreviewRows.length - validRows.length} rejeitados.`);
+      if (showToast) showToast(`Lote importado: ${validRows.length} candidatos adicionados com status Pendente!`, 'success');
+      else showLocalToast(`Lote importado: ${validRows.length} candidatos adicionados!`, 'success');
+      setImportStage('complete');
+    }, 1800);
+  };
+
+  const handleImportReset = () => {
+    setImportStage('idle');
+    setImportFileName(null);
+    setImportFileSize(null);
+    setImportPreviewRows([]);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  // --- CV READER HANDLERS ---
+  const handleCvFileSelect = (file: File) => {
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+      showLocalToast('Formato inválido. Use somente PDF.', 'error');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showLocalToast('Arquivo excede o limite de 5 MB.', 'error');
+      return;
+    }
+    setCurriculoFileName(file.name);
+    setCurriculoStage('reading');
+    setTimeout(() => {
+      setCurriculoForm({
+        nome: 'Maria Fernanda Rodrigues',
+        email: 'mf.rodrigues@email.com',
+        telefone: '(51) 98765-1234',
+        cpf: '789.012.345-67',
+        nascimento: '1992-05-18',
+        cargo: 'Analista de Recursos Humanos',
+        escolaridade: 'Pós-Graduação',
+        racial: 'Branca',
+        deficiencia: false,
+        edital: editais[0]?.numero || '01/2026',
+        habilidades: 'Gestão de Pessoas, Recrutamento e Seleção, Excel Avançado, SAP HR',
+        resumo: '5 anos de experiência em RH corporativo com foco em recrutamento e seleção para cargos técnicos e de gestão.'
+      });
+      setCurriculoStage('preview');
+    }, 2200);
+  };
+
+  const handleSaveCurriculo = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!curriculoForm.nome || !curriculoForm.cpf || !curriculoForm.cargo) {
+      showLocalToast('Preencha os campos obrigatórios.', 'error');
+      return;
+    }
+    setCurriculoStage('saving');
+    setTimeout(() => {
+      const newInscricao = (2026001007 + localCandidatos.length + 1).toString();
+      const created: Candidato = {
+        id: Date.now(),
+        inscricao: newInscricao,
+        nome: curriculoForm.nome,
+        cpf: curriculoForm.cpf,
+        email: curriculoForm.email || 'candidato@email.com',
+        telefone: curriculoForm.telefone || '(51) 99999-9999',
+        cargo: curriculoForm.cargo,
+        edital: curriculoForm.edital || editais[0]?.numero || '01/2026',
+        racial: curriculoForm.racial,
+        deficiencia: curriculoForm.deficiencia,
+        modalidade: curriculoForm.deficiencia ? 'PcD' : (['Preta','Parda'].includes(curriculoForm.racial) ? 'Negros' : 'AC'),
+        nascimento: curriculoForm.nascimento || '1990-01-01',
+        escolaridade: curriculoForm.escolaridade,
+        status: 'Pendente',
+        notaEscrita: 0, notaTitulos: 0, peso_escrita: 6, peso_titulos: 4
+      };
+      if (setCandidatos) setCandidatos(prev => [created, ...prev]);
+      else setLocalCandidatos(prev => [created, ...prev]);
+      if (logAction) logAction('Cadastro via Currículo OCR', 'Candidatos', `Insc. ${newInscricao}`, `${created.nome} cadastrado a partir de leitura de currículo PDF.`);
+      if (showToast) showToast(`Candidato ${created.nome} cadastrado via leitura de currículo!`, 'success');
+      else showLocalToast(`Candidato ${created.nome} cadastrado via leitura de currículo!`, 'success');
+      setCurriculoStage('idle');
+      setCurriculoFileName(null);
+      if (cvFileInputRef.current) cvFileInputRef.current.value = '';
+      setActiveView('listagem');
+      setActiveTab('cadastro');
+    }, 1000);
+  };
+
   // Auto-fill address simulation on CEP enter
   const simulateCepFetch = () => {
     if (newForm.cep.replace(/\D/g, '').length === 8) {
@@ -431,44 +645,97 @@ export default function CandidatosModule({
       {/* Header Panel */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between py-2 border-b border-slate-200 dark:border-slate-700/50">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-slate-800 dark:text-slate-105">Gestão de Candidatos</h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Homologação cadastral, quotas, cotas raciais, lançamento de notas e classificação final.</p>
+          <h1 className="text-2xl font-black tracking-tight text-slate-800 dark:text-slate-105">Módulo de Candidatos</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {activeView === 'listagem' && 'Homologação cadastral, cotas raciais, lançamento de notas e classificação final.'}
+            {activeView === 'importacao' && 'Importação persistida, validação estrutural e histórico de lotes.'}
+            {activeView === 'curriculo' && 'Leitura OCR de currículo em PDF com auto-preenchimento e análise de habilidades.'}
+          </p>
         </div>
-        <div className="mt-4 md:mt-0 flex gap-2">
+        <div className="mt-4 md:mt-0 flex flex-wrap items-center gap-2">
+          {/* Module Navigation Buttons */}
+          <div className="flex items-center rounded-lg overflow-hidden" style={{ border: '1px solid var(--color-border)' }}>
+            <button
+              onClick={() => setActiveView('listagem')}
+              style={{
+                padding: '7px 12px', fontSize: '12px', fontWeight: 600,
+                display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
+                background: activeView === 'listagem' ? 'var(--color-primary)' : 'var(--color-white)',
+                color: activeView === 'listagem' ? '#fff' : 'var(--color-text-secondary)',
+                border: 'none', borderRight: '1px solid var(--color-border)', transition: 'all 0.2s ease'
+              }}
+            >
+              <i className="ti ti-users" style={{ fontSize: 13 }}></i>
+              Listagem e Edição
+            </button>
+            <button
+              onClick={() => setActiveView('importacao')}
+              style={{
+                padding: '7px 12px', fontSize: '12px', fontWeight: 600,
+                display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
+                background: activeView === 'importacao' ? 'var(--color-primary)' : 'var(--color-white)',
+                color: activeView === 'importacao' ? '#fff' : 'var(--color-text-secondary)',
+                border: 'none', borderRight: '1px solid var(--color-border)', transition: 'all 0.2s ease'
+              }}
+            >
+              <i className="ti ti-cloud-upload" style={{ fontSize: 13 }}></i>
+              Importação em Lote
+            </button>
+            <button
+              onClick={() => { setActiveView('curriculo'); setCurriculoStage('idle'); }}
+              style={{
+                padding: '7px 12px', fontSize: '12px', fontWeight: 600,
+                display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
+                background: activeView === 'curriculo' ? 'var(--color-primary)' : 'var(--color-white)',
+                color: activeView === 'curriculo' ? '#fff' : 'var(--color-text-secondary)',
+                border: 'none', transition: 'all 0.2s ease'
+              }}
+            >
+              <i className="ti ti-file-description" style={{ fontSize: 13 }}></i>
+              Leitor de Currículo
+            </button>
+          </div>
+
+          {/* Novo Candidato — only on listagem */}
+          {activeView === 'listagem' && (
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="flex items-center gap-2 text-white px-4 py-2 rounded-lg font-bold shadow-md transition-all text-xs cursor-pointer"
+              style={{ backgroundColor: 'var(--color-primary)' }}
+              aria-label="Registrar Candidatura Manual"
+              id="btn-novo-candidato"
+            >
+              <i className="ti ti-user-plus text-sm"></i>
+              Novo Candidato
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Tabs Switcher — only on listagem view */}
+      {activeView === 'listagem' && (
+        <div className="sp-tabs-container">
           <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold shadow-md transition-all text-xs cursor-pointer"
-            aria-label="Registrar Candidatura Manual"
-            id="btn-novo-candidato"
+            onClick={() => setActiveTab('cadastro')}
+            className={`sp-tab ${activeTab === 'cadastro' ? 'sp-tab-active' : ''}`}
+            id="tab-cadastro-trigger"
           >
-            <i className="ti ti-user-plus text-sm"></i>
-            Novo Candidato
+            <i className="ti ti-users text-sm"></i>
+            Cadastro e Inscrições
+          </button>
+          <button
+            onClick={() => setActiveTab('avaliacao')}
+            className={`sp-tab ${activeTab === 'avaliacao' ? 'sp-tab-active' : ''}`}
+            id="tab-avaliacao-trigger"
+          >
+            <i className="ti ti-clipboard-check text-sm"></i>
+            Banca de Avaliação
           </button>
         </div>
-      </div>
-
-      {/* Tabs Switcher */}
-      <div className="sp-tabs-container">
-        <button
-          onClick={() => setActiveTab('cadastro')}
-          className={`sp-tab ${activeTab === 'cadastro' ? 'sp-tab-active' : ''}`}
-          id="tab-cadastro-trigger"
-        >
-          <i className="ti ti-users text-sm"></i>
-          Cadastro e Inscrições
-        </button>
-        <button
-          onClick={() => setActiveTab('avaliacao')}
-          className={`sp-tab ${activeTab === 'avaliacao' ? 'sp-tab-active' : ''}`}
-          id="tab-avaliacao-trigger"
-        >
-          <i className="ti ti-clipboard-check text-sm"></i>
-          Banca de Avaliação
-        </button>
-      </div>
+      )}
 
       {/* --- CONTENT TABS: CADASTRO --- */}
-      {activeTab === 'cadastro' && (
+      {activeView === 'listagem' && activeTab === 'cadastro' && (
         <div className="space-y-4 animate-fade-in" id="panel-cadastro">
           
           {/* Filters for cadastro */}
@@ -611,7 +878,7 @@ export default function CandidatosModule({
       )}
 
       {/* --- CONTENT TABS: AVALIAÇÃO --- */}
-      {activeTab === 'avaliacao' && (
+      {activeView === 'listagem' && activeTab === 'avaliacao' && (
         <div className="space-y-4 animate-fade-in" id="panel-avaliacao">
           
           {/* Filter Bar */}
@@ -978,6 +1245,525 @@ export default function CandidatosModule({
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* --- CONTENT TABS: IMPORTAÇÃO EM LOTE --- */}
+      {activeView === 'importacao' && (
+        <div className="space-y-5 animate-fade-in" id="panel-importacao">
+
+          {/* IDLE: Dropzone + Feature Cards + History */}
+          {importStage === 'idle' && (
+            <>
+              <div className="sp-card text-center py-8 space-y-5">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: 'var(--color-primary-light)' }}>
+                    <i className="ti ti-cloud-upload text-3xl" style={{ color: 'var(--color-primary)' }}></i>
+                  </div>
+                  <div>
+                    <h2 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: 4 }}>Importar Base de Candidatos</h2>
+                    <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', maxWidth: 480, margin: '0 auto' }}>
+                      Selecione ou arraste uma planilha CSV, XLS ou XLSX. O sistema valida estruturalmente, persiste o lote e registra rejeições na auditoria.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Dropzone */}
+                <div
+                  className="relative rounded-xl mx-4 cursor-pointer transition-all duration-200"
+                  style={{
+                    border: `2px dashed ${isDragOver ? 'var(--color-primary)' : 'var(--color-border)'}`,
+                    backgroundColor: isDragOver ? 'var(--color-primary-light)' : 'transparent',
+                    padding: '40px 20px'
+                  }}
+                  onClick={() => fileInputRef.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
+                  onDragLeave={() => setIsDragOver(false)}
+                  onDrop={(e) => { e.preventDefault(); setIsDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleFileSelect(f); }}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".csv,.xls,.xlsx"
+                    className="hidden"
+                    onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); }}
+                  />
+                  <div className="flex flex-col items-center gap-2 pointer-events-none">
+                    <i className="ti ti-cloud-upload text-4xl" style={{ color: isDragOver ? 'var(--color-primary)' : 'var(--color-text-muted)' }}></i>
+                    <p style={{ fontWeight: 700, fontSize: '14px', color: 'var(--color-text-primary)' }}>
+                      {isDragOver ? 'Solte o arquivo aqui' : 'Clique para escolher ou arraste o arquivo'}
+                    </p>
+                    <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>CSV, XLS ou XLSX — máx. 10 MB</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-center gap-1.5 text-xs">
+                  <i className="ti ti-info-circle" style={{ color: 'var(--color-info)' }}></i>
+                  <span style={{ color: 'var(--color-text-muted)' }}>Precisa de ajuda?</span>
+                  <button
+                    onClick={() => showLocalToast('Simulando download do modelo XLSX...', 'success')}
+                    style={{ color: 'var(--color-primary)', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px' }}
+                  >
+                    Baixar modelo de planilha
+                  </button>
+                </div>
+              </div>
+
+              {/* Feature Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="sp-card text-center py-5 space-y-2">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto" style={{ backgroundColor: 'var(--color-success-bg)' }}>
+                    <i className="ti ti-shield-check text-xl" style={{ color: 'var(--color-success)' }}></i>
+                  </div>
+                  <p style={{ fontWeight: 700, fontSize: '13px', color: 'var(--color-text-primary)' }}>Validação Estrutural</p>
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Colunas e tipos verificados</p>
+                </div>
+                <div className="sp-card text-center py-5 space-y-2">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto" style={{ backgroundColor: 'var(--color-info-bg)' }}>
+                    <i className="ti ti-users text-xl" style={{ color: 'var(--color-info)' }}></i>
+                  </div>
+                  <p style={{ fontWeight: 700, fontSize: '13px', color: 'var(--color-text-primary)' }}>Persistência do Lote</p>
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Dados salvos no banco</p>
+                </div>
+                <div className="sp-card text-center py-5 space-y-2">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto" style={{ backgroundColor: 'var(--color-warning-bg)' }}>
+                    <i className="ti ti-clipboard-data text-xl" style={{ color: 'var(--color-warning)' }}></i>
+                  </div>
+                  <p style={{ fontWeight: 700, fontSize: '13px', color: 'var(--color-text-primary)' }}>Auditoria Completa</p>
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Log de erros e rejeições</p>
+                </div>
+              </div>
+
+              {/* Import History */}
+              {importBatches.length > 0 && (
+                <div className="sp-table-container">
+                  <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--color-border)' }}>
+                    <div>
+                      <p style={{ fontWeight: 700, fontSize: '13px', color: 'var(--color-text-primary)' }}>Histórico de Lotes Importados</p>
+                      <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: 2 }}>Registro de importações nesta sessão</p>
+                    </div>
+                    <span className="sp-badge sp-badge-neutral">{importBatches.length} lote(s)</span>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="sp-table">
+                      <thead>
+                        <tr>
+                          <th>Arquivo</th>
+                          <th>Data / Hora</th>
+                          <th className="text-center">Total</th>
+                          <th className="text-center">Importados</th>
+                          <th className="text-center">Rejeitados</th>
+                          <th className="text-center">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {importBatches.map(batch => (
+                          <tr key={batch.id}>
+                            <td>
+                              <div className="flex items-center gap-2">
+                                <i className="ti ti-file-spreadsheet text-sm" style={{ color: 'var(--color-primary)' }}></i>
+                                <span style={{ fontWeight: 600 }}>{batch.fileName}</span>
+                              </div>
+                            </td>
+                            <td className="font-mono" style={{ fontSize: '12px' }}>{batch.dataHora}</td>
+                            <td className="text-center" style={{ fontWeight: 700 }}>{batch.total}</td>
+                            <td className="text-center"><span className="sp-badge sp-badge-success">{batch.importados}</span></td>
+                            <td className="text-center">
+                              <span className={`sp-badge ${batch.rejeitados > 0 ? 'sp-badge-recurso' : 'sp-badge-neutral'}`}>{batch.rejeitados}</span>
+                            </td>
+                            <td className="text-center"><span className="sp-badge sp-badge-success">Concluído</span></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* VALIDATING STATE */}
+          {importStage === 'validating' && (
+            <div className="sp-card flex flex-col items-center justify-center py-20 space-y-5">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: 'var(--color-primary-light)' }}>
+                <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '3px solid var(--color-border)', borderTopColor: 'var(--color-primary)' }}></div>
+              </div>
+              <div className="text-center">
+                <p style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>Validando arquivo...</p>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: 4 }}>{importFileName} · {importFileSize}</p>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: 2 }}>Verificando estrutura de colunas e tipos de dados</p>
+              </div>
+            </div>
+          )}
+
+          {/* PREVIEW STATE */}
+          {importStage === 'preview' && (
+            <div className="space-y-4">
+              <div className="sp-card flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--color-primary-light)' }}>
+                    <i className="ti ti-file-spreadsheet text-xl" style={{ color: 'var(--color-primary)' }}></i>
+                  </div>
+                  <div>
+                    <p style={{ fontWeight: 700, fontSize: '13px', color: 'var(--color-text-primary)' }}>{importFileName}</p>
+                    <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>{importFileSize} · {importPreviewRows.length} registros detectados</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 text-xs flex-wrap">
+                  <span className="flex items-center gap-1" style={{ color: 'var(--color-success)', fontWeight: 700 }}>
+                    <i className="ti ti-circle-check"></i> {importPreviewRows.filter(r => r.validStatus === 'ok').length} válidos
+                  </span>
+                  <span className="flex items-center gap-1" style={{ color: 'var(--color-warning)', fontWeight: 700 }}>
+                    <i className="ti ti-alert-triangle"></i> {importPreviewRows.filter(r => r.validStatus === 'warn').length} avisos
+                  </span>
+                  <span className="flex items-center gap-1" style={{ color: 'var(--color-danger)', fontWeight: 700 }}>
+                    <i className="ti ti-circle-x"></i> {importPreviewRows.filter(r => r.validStatus === 'error').length} erros
+                  </span>
+                </div>
+              </div>
+
+              <div className="sp-table-container">
+                <div className="overflow-x-auto">
+                  <table className="sp-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: 32, textAlign: 'center' }}>#</th>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>E-mail</th>
+                        <th>Cargo</th>
+                        <th>Edital</th>
+                        <th style={{ textAlign: 'center' }}>Validação</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {importPreviewRows.map((row, idx) => (
+                        <tr key={row.id} style={{
+                          backgroundColor: row.validStatus === 'error' ? 'rgba(192,57,43,0.04)' : row.validStatus === 'warn' ? 'rgba(193,127,0,0.04)' : undefined
+                        }}>
+                          <td style={{ textAlign: 'center', fontFamily: 'monospace', fontSize: '11px', color: 'var(--color-text-muted)' }}>{idx + 1}</td>
+                          <td style={{ fontWeight: 600 }}>{row.nome}</td>
+                          <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{row.cpf}</td>
+                          <td style={{ fontSize: '12px' }}>{row.email}</td>
+                          <td style={{ fontSize: '12px' }}>{row.cargo}</td>
+                          <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{row.edital}</td>
+                          <td style={{ textAlign: 'center' }}>
+                            {row.validStatus === 'ok' && (
+                              <span className="flex items-center justify-center gap-1" style={{ color: 'var(--color-success)', fontWeight: 700, fontSize: '12px' }}>
+                                <i className="ti ti-circle-check"></i> OK
+                              </span>
+                            )}
+                            {row.validStatus === 'warn' && (
+                              <span className="flex items-center justify-center gap-1" style={{ color: 'var(--color-warning)', fontWeight: 700, fontSize: '12px', cursor: 'help' }} title={row.issue}>
+                                <i className="ti ti-alert-triangle"></i> Aviso
+                              </span>
+                            )}
+                            {row.validStatus === 'error' && (
+                              <span className="flex items-center justify-center gap-1" style={{ color: 'var(--color-danger)', fontWeight: 700, fontSize: '12px', cursor: 'help' }} title={row.issue}>
+                                <i className="ti ti-circle-x"></i> Erro
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="p-3 flex justify-between" style={{ backgroundColor: 'var(--color-bg)', borderTop: '1px solid var(--color-border)', fontSize: '12px', color: 'var(--color-text-muted)' }}>
+                  <span>Somente registros sem erro serão importados. Avisos são importados com ressalva.</span>
+                  <span style={{ fontWeight: 700, color: 'var(--color-primary)' }}>
+                    {importPreviewRows.filter(r => r.validStatus !== 'error').length} de {importPreviewRows.length} prontos para importar
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button onClick={handleImportReset} className="sp-btn sp-btn-secondary">
+                  <i className="ti ti-x"></i> Cancelar
+                </button>
+                <button
+                  onClick={handleImportConfirm}
+                  disabled={importPreviewRows.filter(r => r.validStatus !== 'error').length === 0}
+                  className="sp-btn sp-btn-primary"
+                  style={{ opacity: importPreviewRows.filter(r => r.validStatus !== 'error').length === 0 ? 0.5 : 1 }}
+                >
+                  <i className="ti ti-cloud-upload"></i>
+                  Importar {importPreviewRows.filter(r => r.validStatus !== 'error').length} Candidatos
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* IMPORTING STATE */}
+          {importStage === 'importing' && (
+            <div className="sp-card flex flex-col items-center justify-center py-20 space-y-5">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: 'var(--color-primary-light)' }}>
+                <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '3px solid var(--color-border)', borderTopColor: 'var(--color-primary)' }}></div>
+              </div>
+              <div className="text-center">
+                <p style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>Importando candidatos...</p>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: 4 }}>Persistindo lote no banco de dados</p>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: 2 }}>Registrando rejeições na auditoria</p>
+              </div>
+            </div>
+          )}
+
+          {/* COMPLETE STATE */}
+          {importStage === 'complete' && (() => {
+            const validCount = importPreviewRows.filter(r => r.validStatus !== 'error').length;
+            const rejCount = importPreviewRows.filter(r => r.validStatus === 'error').length;
+            return (
+              <div className="space-y-4">
+                <div className="sp-card text-center py-12 space-y-5">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto" style={{ backgroundColor: 'var(--color-success-bg)' }}>
+                    <i className="ti ti-circle-check text-3xl" style={{ color: 'var(--color-success)' }}></i>
+                  </div>
+                  <div>
+                    <p style={{ fontWeight: 800, fontSize: '16px', color: 'var(--color-text-primary)' }}>Importação Concluída!</p>
+                    <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: 4 }}>{importFileName}</p>
+                  </div>
+                  <div className="flex items-center justify-center gap-6">
+                    <div className="text-center">
+                      <p style={{ fontSize: '28px', fontWeight: 900, color: 'var(--color-success)' }}>{validCount}</p>
+                      <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Importados</p>
+                    </div>
+                    <div style={{ width: 1, height: 40, backgroundColor: 'var(--color-border)' }}></div>
+                    <div className="text-center">
+                      <p style={{ fontSize: '28px', fontWeight: 900, color: 'var(--color-danger)' }}>{rejCount}</p>
+                      <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Rejeitados</p>
+                    </div>
+                    <div style={{ width: 1, height: 40, backgroundColor: 'var(--color-border)' }}></div>
+                    <div className="text-center">
+                      <p style={{ fontSize: '28px', fontWeight: 900, color: 'var(--color-text-primary)' }}>{importPreviewRows.length}</p>
+                      <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Total</p>
+                    </div>
+                  </div>
+                  <div className="flex justify-center gap-3 pt-2">
+                    <button onClick={handleImportReset} className="sp-btn sp-btn-secondary">
+                      <i className="ti ti-upload"></i> Nova Importação
+                    </button>
+                    <button onClick={() => setActiveTab('cadastro')} className="sp-btn sp-btn-primary">
+                      <i className="ti ti-users"></i> Ver Candidatos Importados
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+        </div>
+      )}
+
+      {/* --- LEITOR DE CURRÍCULO --- */}
+      {activeView === 'curriculo' && (
+        <div className="space-y-5 animate-fade-in" id="panel-curriculo">
+
+          {/* IDLE: Dropzone */}
+          {curriculoStage === 'idle' && (
+            <div className="sp-card text-center py-10 space-y-5">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: 'var(--color-info-bg)' }}>
+                  <i className="ti ti-file-description text-3xl" style={{ color: 'var(--color-info)' }}></i>
+                </div>
+                <div>
+                  <h2 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: 6 }}>Leitura Inteligente de Currículo</h2>
+                  <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', maxWidth: 500, margin: '0 auto', lineHeight: 1.6 }}>
+                    Anexe um currículo em PDF. O sistema analisa via OCR para extrair automaticamente os dados pessoais, experiência e habilidades do candidato.
+                  </p>
+                </div>
+              </div>
+
+              {/* PDF Dropzone */}
+              <div
+                className="rounded-xl mx-auto cursor-pointer transition-all duration-200"
+                style={{
+                  border: `2px dashed ${isCvDragOver ? 'var(--color-primary)' : 'var(--color-border)'}`,
+                  backgroundColor: isCvDragOver ? 'var(--color-primary-light)' : 'transparent',
+                  padding: '36px 20px', maxWidth: 560
+                }}
+                onClick={() => cvFileInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setIsCvDragOver(true); }}
+                onDragLeave={() => setIsCvDragOver(false)}
+                onDrop={(e) => { e.preventDefault(); setIsCvDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleCvFileSelect(f); }}
+              >
+                <input
+                  ref={cvFileInputRef}
+                  type="file"
+                  accept=".pdf,application/pdf"
+                  className="hidden"
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) handleCvFileSelect(f); }}
+                />
+                <div className="flex flex-col items-center gap-3 pointer-events-none">
+                  <i className="ti ti-upload text-4xl" style={{ color: isCvDragOver ? 'var(--color-primary)' : 'var(--color-text-muted)' }}></i>
+                  <div>
+                    <p style={{ fontWeight: 700, fontSize: '14px', color: 'var(--color-text-primary)' }}>
+                      {isCvDragOver ? 'Solte o currículo aqui' : 'Clique ou arraste o currículo aqui'}
+                    </p>
+                    <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: 4 }}>Formatos suportados: PDF (Max 5MB)</p>
+                  </div>
+                  <button
+                    type="button"
+                    className="sp-btn sp-btn-secondary"
+                    style={{ fontSize: '12px', padding: '6px 16px', pointerEvents: 'none' }}
+                  >
+                    Selecionar Arquivo
+                  </button>
+                </div>
+              </div>
+
+              {/* Feature Badges */}
+              <div className="flex items-center justify-center gap-6 text-xs flex-wrap">
+                <span className="flex items-center gap-1.5" style={{ color: 'var(--color-success)', fontWeight: 700 }}>
+                  <i className="ti ti-circle-check text-sm"></i> Auto-preenchimento
+                </span>
+                <span className="flex items-center gap-1.5" style={{ color: 'var(--color-success)', fontWeight: 700 }}>
+                  <i className="ti ti-circle-check text-sm"></i> Análise de Habilidades
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* READING STATE */}
+          {curriculoStage === 'reading' && (
+            <div className="sp-card flex flex-col items-center justify-center py-20 space-y-5">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: 'var(--color-info-bg)' }}>
+                <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '3px solid var(--color-border)', borderTopColor: 'var(--color-info)' }}></div>
+              </div>
+              <div className="text-center">
+                <p style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>Analisando currículo com OCR...</p>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: 4 }}>{curriculoFileName}</p>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: 2 }}>Extraindo dados pessoais, experiência e habilidades</p>
+              </div>
+            </div>
+          )}
+
+          {/* PREVIEW: Pre-filled Form */}
+          {(curriculoStage === 'preview' || curriculoStage === 'saving') && (
+            <form onSubmit={handleSaveCurriculo} className="space-y-4">
+              {/* Info Alert */}
+              <div className="sp-alert sp-alert-info">
+                <i className="ti ti-brain sp-alert-icon"></i>
+                <p className="sp-alert-text">
+                  Dados extraídos automaticamente de <strong>{curriculoFileName}</strong>. Revise e corrija os campos antes de salvar.
+                </p>
+              </div>
+
+              <div className="sp-card space-y-4">
+                <p style={{ fontWeight: 700, fontSize: '13px', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Dados Pessoais Extraídos
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1 sm:col-span-2">
+                    <label htmlFor="cv-nome">Nome Completo *</label>
+                    <input id="cv-nome" type="text" required value={curriculoForm.nome}
+                      onChange={e => setCurriculoForm(p => ({ ...p, nome: e.target.value }))}
+                      className="sp-input" />
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="cv-cpf">CPF *</label>
+                    <input id="cv-cpf" type="text" required value={curriculoForm.cpf}
+                      onChange={e => setCurriculoForm(p => ({ ...p, cpf: e.target.value }))}
+                      className="sp-input font-mono" />
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="cv-nasc">Data de Nascimento</label>
+                    <input id="cv-nasc" type="date" value={curriculoForm.nascimento}
+                      onChange={e => setCurriculoForm(p => ({ ...p, nascimento: e.target.value }))}
+                      className="sp-input font-mono" />
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="cv-email">E-mail</label>
+                    <input id="cv-email" type="email" value={curriculoForm.email}
+                      onChange={e => setCurriculoForm(p => ({ ...p, email: e.target.value }))}
+                      className="sp-input font-mono" />
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="cv-fone">Telefone</label>
+                    <input id="cv-fone" type="text" value={curriculoForm.telefone}
+                      onChange={e => setCurriculoForm(p => ({ ...p, telefone: e.target.value }))}
+                      className="sp-input font-mono" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="sp-card space-y-4">
+                <p style={{ fontWeight: 700, fontSize: '13px', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Dados Profissionais e Inscrição
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label htmlFor="cv-cargo">Cargo Pretendido *</label>
+                    <input id="cv-cargo" type="text" required value={curriculoForm.cargo}
+                      onChange={e => setCurriculoForm(p => ({ ...p, cargo: e.target.value }))}
+                      className="sp-input" />
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="cv-edital">Vincular ao Edital</label>
+                    <select id="cv-edital" value={curriculoForm.edital}
+                      onChange={e => setCurriculoForm(p => ({ ...p, edital: e.target.value }))}
+                      className="sp-input">
+                      {editais.map(ed => <option key={ed.id} value={ed.numero}>Edital {ed.numero}</option>)}
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="cv-escol">Escolaridade</label>
+                    <select id="cv-escol" value={curriculoForm.escolaridade}
+                      onChange={e => setCurriculoForm(p => ({ ...p, escolaridade: e.target.value }))}
+                      className="sp-input">
+                      <option value="Ensino Fundamental">Ensino Fundamental</option>
+                      <option value="Ensino Médio">Ensino Médio</option>
+                      <option value="Técnico Completo">Ensino Técnico</option>
+                      <option value="Superior">Superior Completo</option>
+                      <option value="Pós-Graduação">Pós-Graduação</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="cv-racial">Autodeclaração Racial</label>
+                    <select id="cv-racial" value={curriculoForm.racial}
+                      onChange={e => setCurriculoForm(p => ({ ...p, racial: e.target.value }))}
+                      className="sp-input">
+                      <option value="Branca">Branca</option>
+                      <option value="Preta">Preta</option>
+                      <option value="Parda">Parda</option>
+                      <option value="Amarela">Amarela</option>
+                      <option value="Indígena">Indígena</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1 sm:col-span-2">
+                    <label htmlFor="cv-skills">Habilidades Detectadas</label>
+                    <input id="cv-skills" type="text" value={curriculoForm.habilidades}
+                      onChange={e => setCurriculoForm(p => ({ ...p, habilidades: e.target.value }))}
+                      className="sp-input" placeholder="Ex: Excel, SAP, Gestão de Pessoas..." />
+                  </div>
+                  <div className="space-y-1 sm:col-span-2">
+                    <label htmlFor="cv-resumo">Resumo Profissional (OCR)</label>
+                    <textarea id="cv-resumo" rows={3} value={curriculoForm.resumo}
+                      onChange={e => setCurriculoForm(p => ({ ...p, resumo: e.target.value }))}
+                      className="sp-input w-full" style={{ minHeight: 72, resize: 'vertical' }} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => { setCurriculoStage('idle'); setCurriculoFileName(null); if (cvFileInputRef.current) cvFileInputRef.current.value = ''; }}
+                  className="sp-btn sp-btn-secondary"
+                  disabled={curriculoStage === 'saving'}
+                >
+                  <i className="ti ti-x"></i> Cancelar
+                </button>
+                <button type="submit" className="sp-btn sp-btn-primary" disabled={curriculoStage === 'saving'}>
+                  {curriculoStage === 'saving' ? (
+                    <><div className="w-4 h-4 rounded-full animate-spin" style={{ border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff' }}></div> Salvando...</>
+                  ) : (
+                    <><i className="ti ti-user-plus"></i> Cadastrar Candidato</>
+                  )}
+                </button>
+              </div>
+            </form>
+          )}
+
         </div>
       )}
 

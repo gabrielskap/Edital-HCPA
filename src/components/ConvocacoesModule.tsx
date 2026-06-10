@@ -740,9 +740,9 @@ Banca Executora (${realizadora})`;
 
               {/* DESKTOP TABLE VIEW */}
               <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-left border-collapse" id="table-presenca-realtime">
+                <table className="sp-table" id="table-presenca-realtime">
                   <thead>
-                    <tr className="bg-[var(--color-primary-light)] text-[11px] uppercase tracking-wider font-bold text-[var(--color-primary-dark)] border-b border-[var(--color-border)]">
+                    <tr>
                       <th className="py-3.5 px-4 text-center w-16">Pos</th>
                       <th className="py-3.5 px-3 w-32">Nº Inscrição</th>
                       <th className="py-3.5 px-3">Nome do Candidato</th>
@@ -782,13 +782,11 @@ Banca Executora (${realizadora})`;
                             <td className="py-4 px-3 font-mono text-center font-bold text-[var(--color-primary-dark)]">
                               {getCandidatoNotaFinal(cand).toFixed(2)}
                             </td>
-                            <td className="py-4 px-3 text-center">
-                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
-                                statusPresenca === 'Presente' 
-                                  ? 'bg-emerald-100 text-emerald-800' 
-                                  : statusPresenca === 'Ausente' 
-                                  ? 'bg-rose-100 text-rose-800' 
-                                  : 'bg-amber-100 text-amber-800'
+                            <td style={{ textAlign: 'center' }}>
+                              <span className={`sp-badge ${
+                                statusPresenca === 'Presente' ? 'sp-badge-ativo'
+                                : statusPresenca === 'Ausente' ? 'sp-badge-encerrado'
+                                : 'sp-badge-pendente'
                               }`}>
                                 {statusPresenca}
                               </span>
@@ -909,7 +907,7 @@ Banca Executora (${realizadora})`;
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start" id="nova-convocacao-form-card">
           
           {/* Left Column Settings (Form Setup) - 5 Cols on Large */}
-          <div className="lg:col-span-5 bg-white rounded-xl border border-[var(--color-border)] p-5 shadow-sm">
+          <div className="sp-card lg:col-span-5">
             <div className="border-b border-[var(--color-border-light)] pb-3 flex items-center gap-2 mb-4">
               <div className="p-2 bg-[var(--color-primary-light)] text-[var(--color-primary)] rounded-lg">
                 <Plus className="w-5 h-5" />
@@ -920,54 +918,34 @@ Banca Executora (${realizadora})`;
               </div>
             </div>
 
-            <form onSubmit={submitNovaConvocacao} className="space-y-4 text-xs font-sans">
-              
-              {/* Select: Edital */}
-              <div className="space-y-1">
-                <label htmlFor="form-ed" className="block text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">Edital Regulador *</label>
-                <select
-                  id="form-ed"
-                  required
-                  className="w-full border border-[var(--color-border)] bg-slate-50 text-[var(--color-text-primary)] rounded-lg p-2.5 font-semibold text-xs focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent cursor-pointer"
-                  value={formEdital}
-                  onChange={(e) => setFormEdital(e.target.value)}
-                >
+            <form onSubmit={submitNovaConvocacao} className="space-y-4">
+
+              <div className="space-y-1.5">
+                <label htmlFor="form-ed">Edital Regulador *</label>
+                <select id="form-ed" required className="w-full sp-input"
+                  value={formEdital} onChange={(e) => setFormEdital(e.target.value)}>
                   {editais.map(ed => (
                     <option key={ed.id} value={ed.numero}>Edital {ed.numero} - {ed.instituicao}</option>
                   ))}
                 </select>
               </div>
 
-              {/* Select: Cargo */}
-              <div className="space-y-1">
-                <label htmlFor="form-cg" className="block text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">Cargo Pretendido *</label>
-                <select
-                  id="form-cg"
-                  required
-                  className="w-full border border-[var(--color-border)] bg-slate-50 text-[var(--color-text-primary)] rounded-lg p-2.5 font-semibold text-xs focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent cursor-pointer"
-                  value={formCargo}
-                  onChange={(e) => setFormCargo(e.target.value)}
-                >
+              <div className="space-y-1.5">
+                <label htmlFor="form-cg">Cargo Pretendido *</label>
+                <select id="form-cg" required className="w-full sp-input"
+                  value={formCargo} onChange={(e) => setFormCargo(e.target.value)}>
                   {cargosDoEdital.length === 0 ? (
                     <option value="">Sem candidatos para este edital</option>
                   ) : (
-                    cargosDoEdital.map(cargo => (
-                      <option key={cargo} value={cargo}>{cargo}</option>
-                    ))
+                    cargosDoEdital.map(cargo => <option key={cargo} value={cargo}>{cargo}</option>)
                   )}
                 </select>
               </div>
 
-              {/* Select: Tipo de Convocação */}
-              <div className="space-y-1">
-                <label htmlFor="form-tp" className="block text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">Tipo da Etapa *</label>
-                <select
-                  id="form-tp"
-                  required
-                  className="w-full border border-[var(--color-border)] bg-slate-50 text-[var(--color-text-primary)] rounded-lg p-2.5 font-semibold text-xs focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent cursor-pointer"
-                  value={formTipo}
-                  onChange={(e) => setFormTipo(e.target.value)}
-                >
+              <div className="space-y-1.5">
+                <label htmlFor="form-tp">Tipo da Etapa *</label>
+                <select id="form-tp" required className="w-full sp-input"
+                  value={formTipo} onChange={(e) => setFormTipo(e.target.value)}>
                   <option value="Prova Escrita">Prova Escrita Objetiva</option>
                   <option value="Entrega de Documentos">Entrega de Documentos / Títulos</option>
                   <option value="Avaliação Médica">Avaliação Médica / Perícia</option>
@@ -975,100 +953,60 @@ Banca Executora (${realizadora})`;
                 </select>
               </div>
 
-              {/* Data e Hora */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label htmlFor="form-dt" className="block text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">Data do Evento *</label>
-                  <input
-                    id="form-dt"
-                    type="date"
-                    required
-                    className="w-full border border-[var(--color-border)] bg-slate-50 text-[var(--color-text-primary)] rounded-lg p-2 font-mono font-bold text-xs"
-                    value={formData}
-                    onChange={(e) => setFormData(e.target.value)}
-                  />
+                <div className="space-y-1.5">
+                  <label htmlFor="form-dt">Data do Evento *</label>
+                  <input id="form-dt" type="date" required className="w-full sp-input font-mono font-bold"
+                    value={formData} onChange={(e) => setFormData(e.target.value)} />
                 </div>
-                <div className="space-y-1">
-                  <label htmlFor="form-hr" className="block text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">Horário Previsto *</label>
-                  <input
-                    id="form-hr"
-                    type="time"
-                    required
-                    className="w-full border border-[var(--color-border)] bg-slate-50 text-[var(--color-text-primary)] rounded-lg p-2 font-mono font-bold text-xs"
-                    value={formHora}
-                    onChange={(e) => setFormHora(e.target.value)}
-                  />
+                <div className="space-y-1.5">
+                  <label htmlFor="form-hr">Horário Previsto *</label>
+                  <input id="form-hr" type="time" required className="w-full sp-input font-mono font-bold"
+                    value={formHora} onChange={(e) => setFormHora(e.target.value)} />
                 </div>
               </div>
 
-              {/* Local como Textarea */}
-              <div className="space-y-1">
-                <label htmlFor="form-lc" className="block text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">Local Completo do Exame *</label>
-                <textarea
-                  id="form-lc"
-                  required
-                  rows={2}
+              <div className="space-y-1.5">
+                <label htmlFor="form-lc">Local Completo do Exame *</label>
+                <textarea id="form-lc" required rows={2}
                   placeholder="Ex: Sala de Recursos Humanos, Bloco D, Sala 101 - Hospital de Clínicas"
-                  className="w-full border border-[var(--color-border)] bg-slate-50 text-[var(--color-text-primary)] rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-[var(--color-primary)]"
-                  value={formLocal}
-                  onChange={(e) => setFormLocal(e.target.value)}
-                />
+                  className="w-full sp-input" style={{ resize: 'vertical' }}
+                  value={formLocal} onChange={(e) => setFormLocal(e.target.value)} />
               </div>
 
-              {/* Metodologia Radio box */}
+              {/* Metodologia */}
               <div className="space-y-2 border-t border-[var(--color-border-light)] pt-3">
-                <span className="block text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">Metodologia de Seleção</span>
-                
+                <span className="block text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">Metodologia de Seleção</span>
+
                 <div className="grid grid-cols-1 gap-2 pt-1">
-                  <label className="flex items-center gap-2 py-2 px-3 border border-[var(--color-border)] rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
-                    <input
-                      type="radio"
-                      name="gen-method"
-                      checked={generationMethod === 'classificacao'}
-                      onChange={() => {
-                        setGenerationMethod('classificacao');
-                        setSelectedCandidates([]);
-                      }}
-                      className="accent-[var(--color-primary)] w-4 h-4 cursor-pointer"
-                    />
-                    <div>
-                      <span className="block font-bold text-[var(--color-text-primary)] text-xs">Por Classificação Legal</span>
-                      <span className="text-[10px] text-[var(--color-text-secondary)]">Classifica automaticamente os candidatos de maior nota final</span>
-                    </div>
-                  </label>
-                  
-                  <label className="flex items-center gap-2 py-2 px-3 border border-[var(--color-border)] rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
-                    <input
-                      type="radio"
-                      name="gen-method"
-                      checked={generationMethod === 'manual'}
-                      onChange={() => {
-                        setGenerationMethod('manual');
-                        setSelectedCandidates([]);
-                      }}
-                      className="accent-[var(--color-primary)] w-4 h-4 cursor-pointer"
-                    />
-                    <div>
-                      <span className="block font-bold text-[var(--color-text-primary)] text-xs">Selecionar Manualmente</span>
-                      <span className="text-[10px] text-[var(--color-text-secondary)]">Marque manualmente os candidatos da lista de homologados</span>
-                    </div>
-                  </label>
+                  {[
+                    { value: 'classificacao', label: 'Por Classificação Legal', desc: 'Classifica automaticamente os candidatos de maior nota final' },
+                    { value: 'manual', label: 'Selecionar Manualmente', desc: 'Marque manualmente os candidatos da lista de homologados' },
+                  ].map(opt => (
+                    <label key={opt.value}
+                      className="flex items-center gap-2 py-2.5 px-3 border border-[var(--color-border)] rounded-lg cursor-pointer hover:bg-[var(--color-primary-light)] transition-colors"
+                      style={{ textTransform: 'none', letterSpacing: 'normal', fontWeight: 'normal' }}>
+                      <input type="radio" name="gen-method"
+                        checked={generationMethod === opt.value}
+                        onChange={() => { setGenerationMethod(opt.value as any); setSelectedCandidates([]); }}
+                        className="accent-[var(--color-primary)] w-4 h-4 cursor-pointer shrink-0" />
+                      <div>
+                        <span className="block font-bold text-[var(--color-text-primary)] text-xs">{opt.label}</span>
+                        <span className="text-[10px] text-[var(--color-text-secondary)]">{opt.desc}</span>
+                      </div>
+                    </label>
+                  ))}
                 </div>
 
-                {/* Subcampo caso classificado */}
                 {generationMethod === 'classificacao' && (
-                  <div className="space-y-2 bg-[var(--color-primary-light)]/40 p-3 rounded-lg border border-[var(--color-border)] animate-slide-up">
-                    <label htmlFor="inp-qtd" className="block text-[11px] font-bold text-[var(--color-primary-dark)]">Quantidade de vagas para convocação:</label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        id="inp-qtd"
-                        type="number"
-                        min={1}
-                        max={eligibleCandidates.length || 10}
-                        className="w-20 border border-[var(--color-border)] bg-white p-2 rounded-lg text-center font-mono font-bold text-sm focus:ring-2 focus:ring-[var(--color-primary)]"
+                  <div className="space-y-2 bg-[var(--color-primary-light)] p-3 rounded-lg border border-[var(--color-border)] animate-slide-up">
+                    <label htmlFor="inp-qtd">Quantidade de vagas para convocação:</label>
+                    <div className="flex items-center gap-3">
+                      <input id="inp-qtd" type="number" min={1} max={eligibleCandidates.length || 10}
+                        className="sp-input font-mono font-bold text-center"
+                        style={{ width: '80px' }}
                         value={qtdConvocados}
-                        onChange={(e) => setQtdConvocados(Math.max(1, Number(e.target.value)))}
-                      />
+                        onChange={(e) => setQtdConvocados(Math.max(1, Number(e.target.value)))} />
                       <span className="text-[11px] text-[var(--color-text-secondary)]">
                         (Maiores notas de {eligibleCandidates.length} cand. aptos)
                       </span>
@@ -1077,22 +1015,17 @@ Banca Executora (${realizadora})`;
                 )}
               </div>
 
-              {/* Dynamic Submit actions */}
+              {/* Botões */}
               <div className="grid grid-cols-2 gap-3 pt-4 border-t border-[var(--color-border-light)]">
-                <button
-                  type="button"
-                  onClick={handleVisualizarComunicado}
+                <button type="button" onClick={handleVisualizarComunicado}
                   disabled={!formLocal || selectedCandidates.length === 0}
-                  className="px-3 py-2.5 border border-[var(--color-border)] hover:bg-slate-50 text-[var(--color-text-secondary)] rounded-lg font-bold inline-flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-xs transition-colors"
-                >
+                  className="sp-btn sp-btn-secondary gap-1.5 justify-center disabled:opacity-40 disabled:cursor-not-allowed">
                   <Eye className="w-4 h-4" />
                   Visualizar PDF
                 </button>
-                <button
-                  type="submit"
+                <button type="submit"
                   disabled={selectedCandidates.length === 0}
-                  className="px-3 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white rounded-lg font-bold shadow-sm hover:shadow inline-flex items-center justify-center gap-1.5 cursor-pointer disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none disabled:cursor-not-allowed text-xs transition-colors"
-                >
+                  className="sp-btn sp-btn-primary gap-1.5 justify-center disabled:opacity-40 disabled:cursor-not-allowed">
                   <FileCheck2 className="w-4 h-4" />
                   Publicar Edital
                 </button>
@@ -1103,9 +1036,9 @@ Banca Executora (${realizadora})`;
 
           {/* Right Column Workspace (Candidates selection & Timbrated preview) - 7 Cols on Large */}
           <div className="lg:col-span-7 space-y-6">
-            
+
             {/* Candidate List preview space */}
-            <div className="bg-white rounded-xl border border-[var(--color-border)] p-5 shadow-sm">
+            <div className="sp-card">
               <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border-light)] mb-4">
                 <div>
                   <h3 className="text-sm font-bold text-[var(--color-text-primary)]">Candidatos no Edital Convocado ({eligibleCandidates.length})</h3>
@@ -1128,7 +1061,7 @@ Banca Executora (${realizadora})`;
               </div>
 
               {eligibleCandidates.length === 0 ? (
-                <div className="py-12 p-4 text-center rounded-lg border border-dashed border-[var(--color-border)] bg-slate-50 text-[var(--color-text-muted)] flex flex-col items-center gap-1.5">
+                <div className="py-12 p-4 text-center rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-muted)] flex flex-col items-center gap-1.5">
                   <AlertCircle className="w-8 h-8 text-[var(--color-text-muted)]" />
                   <p className="text-xs font-bold text-[var(--color-text-primary)]">Sem candidatos qualificados encontrados</p>
                   <p className="text-[11px]">Certifique-se de que existem candidatos com situação "Homologado" para este edital e cargo.</p>
@@ -1143,9 +1076,9 @@ Banca Executora (${realizadora})`;
                         key={c.id} 
                         onClick={() => handleToggleCandidateManual(c.id)}
                         className={`flex items-center justify-between py-2.5 px-3 rounded-lg transition-colors cursor-pointer ${
-                          isChecked 
-                            ? 'bg-[var(--color-primary-light)]/40 border border-transparent' 
-                            : 'hover:bg-slate-50'
+                          isChecked
+                            ? 'bg-[var(--color-primary-light)] border border-[var(--color-border)]'
+                            : 'hover:bg-[var(--color-bg)]'
                         }`}
                       >
                         <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -1175,7 +1108,7 @@ Banca Executora (${realizadora})`;
                         <div className="text-right whitespace-nowrap pl-4">
                           <span className="block text-[11px] font-bold text-[var(--color-primary-dark)] font-mono">Nota Final: {getCandidatoNotaFinal(c).toFixed(2)}</span>
                           {isChecked && (
-                            <span className="text-[9px] font-black text-[var(--color-primary)] tracking-wider uppercase bg-emerald-100 px-1.5 py-0.2 md:py-0.5 rounded ml-auto mt-0.5 inline-block">CONVOCADO</span>
+                            <span className="sp-badge sp-badge-ativo" style={{ fontSize: '9px', padding: '2px 7px' }}>CONVOCADO</span>
                           )}
                         </div>
                       </div>
@@ -1186,7 +1119,7 @@ Banca Executora (${realizadora})`;
             </div>
 
             {/* Timbrated PDF Previewer layout */}
-            <div className="bg-white rounded-xl border border-[var(--color-border)] overflow-hidden shadow-sm">
+            <div className="sp-card overflow-hidden" style={{ padding: 0 }}>
               <div className="bg-[var(--color-primary)] text-white p-4 flex justify-between items-center">
                 <span className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
                   <BookmarkCheck className="w-4 h-4 text-[var(--color-accent)]" />
@@ -1204,32 +1137,30 @@ Banca Executora (${realizadora})`;
                 )}
               </div>
 
-              <div className="p-5">
+              <div style={{ padding: '20px 24px' }}>
                 {previewTexto ? (
                   <div className="space-y-4 animate-fade-in">
-                    <div className="bg-slate-50 border border-[var(--color-border)] p-4 rounded-lg overflow-x-auto max-h-[350px] overflow-y-auto">
-                      <pre className="font-mono text-[10px] text-slate-750 whitespace-pre-wrap leading-relaxed">
+                    <div className="bg-[var(--color-bg)] border border-[var(--color-border)] p-4 rounded-lg overflow-x-auto max-h-[350px] overflow-y-auto">
+                      <pre className="font-mono text-[10px] text-[var(--color-text-primary)] whitespace-pre-wrap leading-relaxed">
                         {previewTexto}
                       </pre>
                     </div>
-                    <div className="flex justify-center items-center gap-2 p-2.5 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg text-[11px] font-sans">
-                      <Info className="w-4 h-4 flex-shrink-0" />
-                      <span>Este diário de chamadas oficial está pronto para publicação eletrônica. Clicar em "Publicar Edital" finalizará este ato administrativo.</span>
+                    <div className="sp-alert sp-alert-warning text-[11px]">
+                      <i className="sp-alert-icon ti ti-info-circle"></i>
+                      <span className="sp-alert-text">Este diário de chamadas oficial está pronto para publicação eletrônica. Clicar em "Publicar Edital" finalizará este ato administrativo.</span>
                     </div>
                   </div>
                 ) : (
-                  <div className="py-12 text-center text-[var(--color-text-muted)] text-xs flex flex-col items-center justify-center space-y-2">
-                    <FileText className="w-12 h-12 text-slate-250 animate-bounce" />
+                  <div className="py-12 text-center flex flex-col items-center justify-center space-y-2">
+                    <FileText className="w-12 h-12 text-[var(--color-border)] animate-bounce" />
                     <div>
                       <p className="font-bold text-[var(--color-text-primary)]">Painel do Comunicado Vazio</p>
                       <p className="text-[11px] text-[var(--color-text-secondary)] mt-1">Preencha o local e selecione candidatos para gerar a pré-visualização timbrada.</p>
                     </div>
-                    <button
-                      type="button"
+                    <button type="button"
                       disabled={!formLocal || selectedCandidates.length === 0}
                       onClick={handleVisualizarComunicado}
-                      className="mt-3 px-3.5 py-2 border border-[var(--color-border)] hover:bg-slate-50 text-[var(--color-text-primary)] font-bold rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs"
-                    >
+                      className="sp-btn sp-btn-secondary mt-2 disabled:opacity-40 disabled:cursor-not-allowed">
                       Gerar Visualização do Documento
                     </button>
                   </div>
@@ -1397,10 +1328,8 @@ Banca Executora (${realizadora})`;
                               />
                             </div>
                             
-                            <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider mt-3 inline-block ${
-                              conv.status === 'Concluída' 
-                                ? 'bg-slate-100 text-[var(--color-text-secondary)] border border-[var(--color-border)]' 
-                                : 'bg-emerald-100 text-emerald-800'
+                            <span className={`sp-badge mt-3 ${
+                              conv.status === 'Concluída' ? 'sp-badge-neutral' : 'sp-badge-ativo'
                             }`}>
                               {conv.status}
                             </span>
